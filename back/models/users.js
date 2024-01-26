@@ -1,4 +1,4 @@
-import { Schema, model, ObjectId } from 'mongoose'
+import { Schema, model, ObjectId, Error } from 'mongoose'
 import { Validator } from 'validator'
 import bcrypt from 'bcrypt'
 import UserRole from '../enums/UserRole.js'
@@ -44,9 +44,9 @@ const schema = new Schema({
   },
   password: {
     type: String,
-    required: [true, '使用者密碼必填']
-    // minlength: [6, '使用者密碼最少6個字'],
-    // maxlength: [12, '使用者密碼最多12個字']
+    required: [true, '使用者密碼必填'],
+    minlength: [4, '使用者密碼最少4個字'],
+    maxlength: [12, '使用者密碼最多12個字']
   },
   tokens: {
     type: [String]
@@ -57,11 +57,31 @@ const schema = new Schema({
   },
   role: {
     type: String,
-    // 在 back/enums/UserRole.js 裡面另外定義 0 使用者 1 管理員
     default: UserRole.USER
-  },
-  timestamps: true,
-  versionKey: false
+    // 在 back/enums/UserRole.js 裡面另外定義 0 使用者 1 管理員
+    // .USER => 預設值會被設定為 0，這代表用戶的角色是 USER
+  }
+}, {
+  // 設定 Schema 的行為，所以另外寫在第二個參數{}
+  timestamps: true, // 紀錄 建立日期、更新日期，自動生成 createdAt、updatedAt
+  versionKey: false // 不要 __v 這個欄位，不用記錄所有東西被改了幾次
+})
+
+schema.pre('save', async function (next) {
+  // 存進資料庫之前，執行這個 function (箭頭函式沒有 this，要寫成一般的 function)
+  const user = this
+  // 這裡的 this 指的是 user document 準備保存進去的資料
+  if (user.isModified('password')) {
+    // 如果密碼有被修改過，就執行
+    if (user.password.length < 4 || user.password.length > 12) {
+      const error = new Error.ValidationError(null)
+      error.addError('password', new Error.ValidationError({ message: '密碼長度最少 6 個字，最多 12 個字' }))
+      next(error)
+      return
+    }
+    this.password = await bcrypt.hash(this.password, 10)
+  }
+  next()
 })
 
 export default model('users', schema)
