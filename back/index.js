@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import routeUsers from './routes/users.js'
 import { StatusCodes } from 'http-status-codes'
+import './passport/passport.js'
 
 const app = express()
 
@@ -12,11 +13,10 @@ app.use(cors({
   // origin = 請求的來源
   // callback (錯誤,是否允許請求)
   origin (origin, callback) {
-    if(origin === undefined || origin.includes('rechilab.com') || origin.includes('localhost')) {
+    if (origin === undefined || origin.includes('github.io') || origin.includes('localhost')) {
       callback(null, true)
-    }else{
+    } else {
       callback(new Error('CORS'), false)
-      // 如果網域不是 rechilab.com 或 localhost，就會回傳錯誤
     }
   }
 }))
@@ -40,16 +40,16 @@ app.use((_, req, res, next) => {
 
 app.use('/users', routeUsers)
 
-app.all('*',(req, res) => {
+app.all('*', (req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,
-    message: '找不到內容'
+    message: '找不到'
   })
 })
 // app.all => 任意請求方式  ， '*' => 任意路徑
 // app.all('*',(req, res) =>  任意請求的任意路徑(沒有寫的路徑)執行 function 回應404找不到
 
-app.listen(process.env.PORT || 4000,async () => {
+app.listen(process.env.PORT || 4000, async () => {
   console.log('伺服器啟動')
   await mongoose.connect(process.env.DB_URL)
   console.log('資料庫連線成功')

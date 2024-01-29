@@ -10,10 +10,11 @@ v-navigation-drawer(v-model="drawer" temporary location="right" v-if="isMobile")
           v-icon(:icon="item.icon")
         v-list-item-title {{ item.text }}
 //- 導覽列
-v-app-bar(color="light")
+v-app-bar(color="#1565C0")
   v-container.d-flex.align-center
-    v-btn(to="/" :active="false")
-      v-app-bar-title 購物網
+    v-btn.no-hover(to="/" :active="false")
+      v-app-bar-title
+        img(src="@/assets/logo-04.png" alt="一起來打排" style="height: 40px")
     v-spacer
     //- 手機板導覽列
     template(v-if="isMobile")
@@ -52,3 +53,10 @@ const navItems = [
 ]
 
 </script>
+
+<style scoped>
+.no-hover:hover {
+  background-color: inherit !important;
+}
+
+</style>
