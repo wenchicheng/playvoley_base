@@ -1,5 +1,5 @@
 import { Schema, model, ObjectId, Error } from 'mongoose'
-import { Validator } from 'validator'
+import validator from 'validator'
 import bcrypt from 'bcrypt'
 import UserRole from '../enums/UserRole.js'
 

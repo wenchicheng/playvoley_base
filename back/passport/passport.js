@@ -13,18 +13,17 @@ passport.use('login', new passportLocal.Strategy({
 }, async (account, password, done) => {
   try {
     const user = await users.findOne({ account })
-    // 尋找帳號
     if (!user) {
-      throw new Error('ACCOUNT_NOT_EXIST')
+      throw new Error('ACCOUNT')
     }
     if (!bcrypt.compareSync(password, user.password)) {
-      throw new Error('PASSWORD_INCORRECT')
+      throw new Error('PASSWORD')
     }
     return done(null, user, null)
   } catch (error) {
-    if (error.message === 'ACCOUNT_NOT_EXIST') {
+    if (error.message === 'ACCOUNT') {
       return done(null, null, { message: '帳號不存在' })
-    } else if (error.message === 'PASSWORD_INCORRECT') {
+    } else if (error.message === 'PASSWORD') {
       return done(null, null, { message: '密碼錯誤' })
     } else {
       return done(null, null, { message: '未知錯誤' })
