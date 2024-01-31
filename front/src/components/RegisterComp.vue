@@ -53,10 +53,10 @@ import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { useRouter } from 'vue-router'
 import { useSnackbar } from 'vuetify-use-dialog'
-import { useApi } from '@/composables/axios'
+// import { useApi } from '@/composables/axios'
 import { api } from '@/plugins/axios'
 
-const { api } = useApi()
+// const { api } = useApi()
 
 const router = useRouter()
 const createSnackbar = useSnackbar()
@@ -116,7 +116,7 @@ const submit = handleSubmit(async (values) => {
       snackbarProps: {
         timeout: 2000,
         color: 'green',
-        location: 'bottom'
+        location: 'top'
       }
     })
     router.push('/login')

@@ -11,6 +11,7 @@ export const create = async (req, res) => {
       message: ''
     })
   } catch (error) {
+    console.log(error)
     if (error.name === 'ValidationError') {
       const key = Object.keys(error.errors)[0]
       const message = error.errors[key].message
@@ -59,6 +60,7 @@ export const login = async (req, res) => {
       }
     })
   } catch (error) {
+    console.log(error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: '未知錯誤'

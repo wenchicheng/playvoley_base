@@ -21,6 +21,7 @@ passport.use('login', new passportLocal.Strategy({
     }
     return done(null, user, null)
   } catch (error) {
+    console.log(error)
     if (error.message === 'ACCOUNT') {
       return done(null, null, { message: '帳號不存在' })
     } else if (error.message === 'PASSWORD') {

@@ -27,7 +27,6 @@
       <template v-else>
         <template v-for="item in navItems" :key="item.to">
           <v-btn :to="item.to" :prepend-icon="item.icon" class="no-hover">{{ item.text }}</v-btn>
-          <v-btn prepend-icon="mdi-list-status" to="/list">註冊</v-btn>
         </template>
         <v-dialog transition="dialog-top-transition" width="600">
           <template v-slot:activator="{ props }">
@@ -87,7 +86,7 @@ const drawer = ref(false)
 // 導覽列項目
 const navItems = [
   { to: '/login', text: '介紹', icon: 'mdi-account-plus' },
-  { to: '/register', text: '註冊', icon: 'mdi-account-plus' },
+  // { to: '/register', text: '註冊', icon: 'mdi-account-plus' },
   { to: '/login', text: '預約', icon: 'mdi-account-plus' }
 ]
 
