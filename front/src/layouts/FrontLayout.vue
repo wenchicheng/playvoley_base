@@ -44,9 +44,10 @@
 
             <v-card-text>
               <v-window v-model="tab">
-                <v-window-item value="login"> 登入 </v-window-item>
+                <v-window-item value="login">
+                  <LoginComp></LoginComp>
+                </v-window-item>
                 <v-window-item value="register">
-                  註冊
                   <RegisterComp></RegisterComp>
                 </v-window-item>
               </v-window>
@@ -75,6 +76,7 @@ import { useDisplay } from 'vuetify'
 import { ref, computed } from 'vue'
 // import LoginView from '@/views/front/LoginView.vue'
 import RegisterComp from '@/components/RegisterComp.vue'
+import LoginComp from '@/components/LoginComp.vue'
 
 // 手機版判斷
 const { mobile } = useDisplay()

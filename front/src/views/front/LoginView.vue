@@ -1,8 +1,7 @@
 <template>
-  <h1>123</h1>
+  <LoginComp></LoginComp>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
+import LoginComp from '@/components/LoginComp.vue'
 </script>

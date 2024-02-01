@@ -26,7 +26,7 @@ const schema = new Schema({
     validate: {
       // 限制帳號是不是只有英文和數字，可用正規表示法或 validator 套件的 isAlphanumeric 做驗證
       validator (value) {
-        return Validator.isAlphanumeric(value)
+        return validator.isAlphanumeric(value)
       },
       message: '使用者帳號只能是英文和數字'
     }
@@ -37,16 +37,14 @@ const schema = new Schema({
     unique: true,
     validate: {
       validator (value) {
-        return Validator.isEmail(value)
+        return validator.isEmail(value)
       },
       message: '信箱格式不正確'
     }
   },
   password: {
     type: String,
-    required: [true, '使用者密碼必填'],
-    minlength: [4, '使用者密碼最少4個字'],
-    maxlength: [12, '使用者密碼最多12個字']
+    required: [true, '使用者密碼必填']
   },
   tokens: {
     type: [String]
