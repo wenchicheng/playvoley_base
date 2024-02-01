@@ -53,10 +53,69 @@ export const login = async (req, res) => {
         account: req.user.account,
         email: req.user.email,
         role: req.user.role,
-        cart: req.user.cart.reduce((total, current) => {
-          return total + current.quantity
-        }, 0)
-        // 設定初始值為 0
+        cart: req.user.cartQuantity
+        // 引用寫在 back\models\users.js 68~73行
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+
+// 登出
+export const logout = async (req, res) => {
+  try {
+    req.tokens = req.user.tokens.filter(token => token !== req.token)
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: ''
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+
+// 舊換新
+export const extend = async (req, res) => {
+  try {
+    const idx = req.user.tokens.findIndex(token => token === req.token)
+    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+    req.user.tokens[idx] = token
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: token
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+// 登入之後，會把JWT放在pinia裡面，然後放進localStorage裡面(帳號信箱沒有)，然後每次發送請求的時候，然後後端會去驗證JWT，驗證成功或失敗，就會把資料回傳給前端
+export const getProfile = (req, res) => {
+  try {
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: {
+        account: req.user.account,
+        email: req.user.email,
+        role: req.user.role,
+        cart: req.user.cartQuantity
+        // 引用寫在 back\models\users.js 68~73行
       }
     })
   } catch (error) {

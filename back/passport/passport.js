@@ -53,6 +53,7 @@ passport.use('jwt', new passportJWT.Strategy({
 
     // const token = req.headers.authorization.split(' ')
     const token = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken()(req)
+    // 取了之後檢查有沒有這個使用者存在
     const user = await users.findOne({ _id: payload._id, tokens: token })
     if (!user) {
       throw new Error('JWT')

@@ -65,6 +65,14 @@ const schema = new Schema({
   versionKey: false // 不要 __v 這個欄位，不用記錄所有東西被改了幾次
 })
 
+// mongoose 的 virtual setter 虛擬欄位語法
+schema.virtual('cartQuantity')
+  .get(function () {
+    return this.cart.reduce((total, current) => {
+      return total + current.quantity
+    }, 0)
+  })
+
 schema.pre('save', async function (next) {
   // 存進資料庫之前，執行這個 function (箭頭函式沒有 this，要寫成一般的 function)
   const user = this
