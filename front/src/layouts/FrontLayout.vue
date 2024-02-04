@@ -1,16 +1,21 @@
 <template>
-<!-- 手機版側欄 -->
+<!-- 手機版側欄 -------------------------------------------------------------->
 <v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
     <v-list>
       <template v-for="item in navItems" :key="item.to">
         <v-list-item :to="item.to" class="d-flex align-center justify-center ">
-          <!-- <v-icon>{{ item.icon }}</v-icon> -->
           <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
         </v-list-item>
       </template>
+      <v-list-item to="/login" class="d-flex align-center justify-center" v-if="!user.isLogin">
+        <v-list-item-title class="list-title">登入</v-list-item-title>
+      </v-list-item>
+      <v-list-item to="/register" class="d-flex align-center justify-center" v-if="!user.isLogin">
+        <v-list-item-title class="list-title">註冊</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
-  <!-- 導覽列 -->
+  <!-- 導覽列-------------------------------------------------------------- -->
   <v-app-bar color="#1565C0">
     <v-container class="d-flex align-center">
       <a href="/">
@@ -28,9 +33,10 @@
         <template v-for="item in navItems" :key="item.to">
           <v-btn :to="item.to" :prepend-icon="item.icon" class="no-hover">{{ item.text }}</v-btn>
         </template>
+        <!-- 登入視窗 -->
         <v-dialog transition="dialog-top-transition" width="600">
           <template v-slot:activator="{ props }">
-            <v-btn v-bind="props">登入</v-btn>
+            <v-btn v-bind="props" v-if="!user.isLogin">登入</v-btn>
           </template>
           <v-card>
             <v-tabs
@@ -77,6 +83,9 @@ import { ref, computed } from 'vue'
 // import LoginView from '@/views/front/LoginView.vue'
 import RegisterComp from '@/components/RegisterComp.vue'
 import LoginComp from '@/components/LoginComp.vue'
+import { useUserStore } from '@/store/user'
+
+const user = useUserStore()
 
 // 手機版判斷
 const { mobile } = useDisplay()
@@ -86,11 +95,18 @@ const isMobile = computed(() => mobile.value)
 const drawer = ref(false)
 
 // 導覽列項目
-const navItems = [
-  { to: '/login', text: '介紹', icon: 'mdi-account-plus' },
-  // { to: '/register', text: '註冊', icon: 'mdi-account-plus' },
-  { to: '/login', text: '預約', icon: 'mdi-account-plus' }
-]
+const navItems = computed(() => {
+  return [
+    { to: '/about', text: '場館介紹' },
+    { to: '/news', text: '最新消息' },
+    { to: '/appointment', text: '預約報名' },
+    { to: '/myappointment', text: '我的預約', show: user.isLogin },
+    // { to: '/shop', text: '購物車' },
+    // { to: '/cart', text: '購物車', show: user.isLogin },
+    { to: '/appointmentmanage', text: '管理預約', show: user.isLogin && user.isAdmin },
+    { to: '/cartmanage', text: '管理訂單', show: user.isLogin && user.isAdmin }
+  ]
+})
 
 const tab = ref('login')
 // ref() 會回傳一個響應式的物件，並且會自動將 tab 的值轉換為響應式的資料，這樣當 tab 的值改變時，會自動重新渲染頁面
