@@ -38,6 +38,16 @@ const routes = [
         }
       },
       {
+        path: 'myappointment',
+        name: 'Myappointment',
+        component: () => import('@/views/front/MyappointmentView.vue'),
+        meta: {
+          title: '一起來打排 | 我的預約',
+          login: true,
+          admin: false
+        }
+      },
+      {
         path: 'news',
         name: 'News',
         component: () => import('@/views/front/NewsView.vue'),

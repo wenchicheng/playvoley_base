@@ -2,9 +2,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import UserRole from '@/enums/UserRole'
+import { useApi } from '@/composables/axios'
 
 export const useUserStore = defineStore('user', () => {
   // 'useUserStore'、'user' 與檔名user相同
+  const { apiAuth } = useApi()
+
   const token = ref('')
   const account = ref('')
   const email = ref('')
@@ -29,6 +32,28 @@ export const useUserStore = defineStore('user', () => {
     return role.value === UserRole.ADMIN
   })
 
+  const getProfile = async () => {
+    if (token.value.length === 0) return
+
+    try {
+      const { data } = await apiAuth.get('/user/me')
+      // '/user/me' 這個路徑是後端給的 => back\routes\users.js 的router.get('/me', auth.jwt, getProfile)
+      // 回傳的結果 back\controllers\users.js 的 export const getProfile = (req, res)
+      login(data.result)
+    } catch (error) {
+      console.log(error)
+      logout()
+    }
+  }
+
+  const logout = () => {
+    token.value = ''
+    account.value = ''
+    email.value = ''
+    cart.value = 0
+    role.value = UserRole.USER
+  }
+
   return {
     token,
     account,
@@ -37,7 +62,8 @@ export const useUserStore = defineStore('user', () => {
     role,
     login,
     isLogin,
-    isAdmin
+    isAdmin,
+    getProfile
   }
 }, {
   // LocalStorage

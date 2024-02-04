@@ -3,7 +3,7 @@
 <v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
     <v-list>
       <template v-for="item in navItems" :key="item.to">
-        <v-list-item :to="item.to" class="d-flex align-center justify-center ">
+        <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
           <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
         </v-list-item>
       </template>
@@ -31,7 +31,7 @@
       <!-- 電腦版導覽列 -->
       <template v-else>
         <template v-for="item in navItems" :key="item.to">
-          <v-btn :to="item.to" :prepend-icon="item.icon" class="no-hover">{{ item.text }}</v-btn>
+          <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
         </template>
         <!-- 登入視窗 -->
         <v-dialog transition="dialog-top-transition" width="600">
@@ -97,14 +97,14 @@ const drawer = ref(false)
 // 導覽列項目
 const navItems = computed(() => {
   return [
-    { to: '/about', text: '場館介紹' },
-    { to: '/news', text: '最新消息' },
-    { to: '/appointment', text: '預約報名' },
+    { to: '/about', text: '場館介紹', show: true },
+    { to: '/news', text: '最新消息', show: true },
+    { to: '/appointment', text: '預約報名', show: true },
     { to: '/myappointment', text: '我的預約', show: user.isLogin },
     // { to: '/shop', text: '購物車' },
     // { to: '/cart', text: '購物車', show: user.isLogin },
-    { to: '/appointmentmanage', text: '管理預約', show: user.isLogin && user.isAdmin },
-    { to: '/cartmanage', text: '管理訂單', show: user.isLogin && user.isAdmin }
+    { to: '/appointmentmanage', text: '管理預約', show: user.isLogin && user.isAdmin }
+    // { to: '/cartmanage', text: '管理訂單', show: user.isLogin && user.isAdmin }
   ]
 })
 
