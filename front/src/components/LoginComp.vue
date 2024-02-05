@@ -96,6 +96,7 @@ const submit = handleSubmit(async (values) => {
       email: values.email,
       password: values.password
     })
+    console.log('data11111111', data)
     userStore.login(data.result)
     createSnackbar({
       text: '登入成功',

@@ -23,6 +23,7 @@ export const useUserStore = defineStore('user', () => {
     email.value = data.email
     cart.value = data.cart
     role.value = data.role
+    // console.log('111111', role.value)
   }
 
   // 判斷有沒有登入的條件是 token長度是否大於0
@@ -31,7 +32,9 @@ export const useUserStore = defineStore('user', () => {
   })
 
   const isAdmin = computed(() => {
-    return role.value === UserRole.ADMIN
+    // console.log('role.value', role.value)
+    // console.log('UserRole.ADMIN', UserRole.ADMIN)
+    return Number(role.value) === UserRole.ADMIN
   })
 
   const getProfile = async () => {

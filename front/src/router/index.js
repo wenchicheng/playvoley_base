@@ -78,6 +78,22 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/admin',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AdminHome',
+        component: () => import('@/views/admin/HomeView.vue'),
+        meta: {
+          title: '一起來打排 | 後台管理',
+          login: true,
+          admin: true
+        }
+      }
+    ]
   }
 ]
 

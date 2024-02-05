@@ -1,6 +1,6 @@
 <template>
 <!-- 手機版側欄 -------------------------------------------------------------->
-<v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
+  <v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
     <v-list>
       <template v-for="item in navItems" :key="item.to">
         <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
@@ -37,7 +37,7 @@
           <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
         </template>
         <!-- 登出按鈕 -->
-        <v-btn v-bind="props" v-if="user.isLogin" @click="logout">登出</v-btn>
+        <v-btn v-if="user.isLogin" @click="logout">登出</v-btn>
         <!-- 登入視窗 -->
         <v-dialog transition="dialog-top-transition" width="600">
           <template v-slot:activator="{ props }">
@@ -91,10 +91,11 @@ import LoginComp from '@/components/LoginComp.vue'
 import { useUserStore } from '@/store/user'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
+import { useRoute } from 'vue-router'
 
 const { apiAuth } = useApi()
-
 const createSnackbar = useSnackbar()
+const router = useRoute()
 
 const user = useUserStore()
 
@@ -112,10 +113,8 @@ const navItems = computed(() => {
     { to: '/news', text: '最新消息', show: true },
     { to: '/appointment', text: '預約報名', show: true },
     { to: '/myappointment', text: '我的預約', show: user.isLogin },
-    // { to: '/shop', text: '購物車' },
     // { to: '/cart', text: '購物車', show: user.isLogin },
-    { to: '/appointmentmanage', text: '管理預約', show: user.isLogin && user.isAdmin }
-    // { to: '/cartmanage', text: '管理訂單', show: user.isLogin && user.isAdmin }
+    { to: '/admin', text: '管理', show: user.isLogin && user.isAdmin }
   ]
 })
 
@@ -135,16 +134,16 @@ const logout = async () => {
         location: 'bottom'
       }
     })
+    router.push('/HomeView') // 登出後回到首頁
   } catch (error) {
-    console.log(error)
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
       text,
       showCloseButton: false,
       snackbarProps: {
+        color: 'error',
         timeout: 2000,
-        color: 'red',
-        location: 'bottom'
+        location: 'top'
       }
     })
   }

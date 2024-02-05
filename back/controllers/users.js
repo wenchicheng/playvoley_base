@@ -88,7 +88,7 @@ export const logout = async (req, res) => {
 export const extend = async (req, res) => {
   try {
     const idx = req.user.tokens.findIndex(token => token === req.token)
-    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 da' })
     req.user.tokens[idx] = token
     await req.user.save()
     res.status(StatusCodes.OK).json({

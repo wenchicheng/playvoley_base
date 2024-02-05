@@ -54,7 +54,7 @@ const schema = new Schema({
     default: []
   },
   role: {
-    type: String,
+    type: Number,
     default: UserRole.USER
     // 在 back/enums/UserRole.js 裡面另外定義 0 使用者 1 管理員
     // .USER => 預設值會被設定為 0，這代表用戶的角色是 USER

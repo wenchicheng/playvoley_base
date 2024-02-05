@@ -26,6 +26,7 @@ export const login = (req, res, next) => {
         return
       }
     }
+    console.log(user)
     req.user = user
     // 如果認證成功，則將用戶物件附加到請求物件上
     next()
