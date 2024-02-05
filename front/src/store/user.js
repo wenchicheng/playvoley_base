@@ -16,7 +16,9 @@ export const useUserStore = defineStore('user', () => {
   // 和 controller 的 result 一樣
 
   const login = (data) => {
-    token.value = data.token
+    if (data.token) {
+      token.value = data.token
+    }
     account.value = data.account
     email.value = data.email
     cart.value = data.cart
@@ -36,7 +38,7 @@ export const useUserStore = defineStore('user', () => {
     if (token.value.length === 0) return
 
     try {
-      const { data } = await apiAuth.get('/user/me')
+      const { data } = await apiAuth.get('/users/me')
       // '/user/me' 這個路徑是後端給的 => back\routes\users.js 的router.get('/me', auth.jwt, getProfile)
       // 回傳的結果 back\controllers\users.js 的 export const getProfile = (req, res)
       login(data.result)

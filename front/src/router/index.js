@@ -1,5 +1,5 @@
 // Composables
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, START_LOCATION } from 'vue-router'
 import { useUserStore } from '@/store/user'
 
 const routes = [
@@ -92,8 +92,12 @@ router.beforeEach((to, from) => {
 })
 
 // 頁面攔截
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const user = useUserStore()
+
+  if (from === START_LOCATION) {
+    await user.getProfile()
+  }
 
   if (user.isLogin && ['/register', '/login'].includes(to.path)) {
     // 如果使用者有登入，且要去的路徑是/register', '/login'，重新導向到首頁next('/')
