@@ -13,6 +13,9 @@
       <v-list-item to="/register" class="d-flex align-center justify-center" v-if="!user.isLogin">
         <v-list-item-title class="list-title">註冊</v-list-item-title>
       </v-list-item>
+      <v-list-item @click="logout" class="d-flex align-center justify-center" v-if="user.isLogin">
+        <v-list-item-title class="list-title">登出</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
   <!-- 導覽列-------------------------------------------------------------- -->
@@ -33,6 +36,8 @@
         <template v-for="item in navItems" :key="item.to">
           <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
         </template>
+        <!-- 登出按鈕 -->
+        <v-btn v-bind="props" v-if="user.isLogin" @click="logout">登出</v-btn>
         <!-- 登入視窗 -->
         <v-dialog transition="dialog-top-transition" width="600">
           <template v-slot:activator="{ props }">
@@ -84,6 +89,12 @@ import { ref, computed } from 'vue'
 import RegisterComp from '@/components/RegisterComp.vue'
 import LoginComp from '@/components/LoginComp.vue'
 import { useUserStore } from '@/store/user'
+import { useApi } from '@/composables/axios'
+import { useSnackbar } from 'vuetify-use-dialog'
+
+const { apiAuth } = useApi()
+
+const createSnackbar = useSnackbar()
 
 const user = useUserStore()
 
@@ -111,6 +122,33 @@ const navItems = computed(() => {
 const tab = ref('login')
 // ref() 會回傳一個響應式的物件，並且會自動將 tab 的值轉換為響應式的資料，這樣當 tab 的值改變時，會自動重新渲染頁面
 
+const logout = async () => {
+  try {
+    await apiAuth.delete('/users/logout')
+    user.logout()
+    createSnackbar({
+      text: '登出成功',
+      showCloseButton: false,
+      snackbarProps: {
+        color: 'success',
+        timeout: 2000,
+        location: 'bottom'
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
+    createSnackbar({
+      text,
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'red',
+        location: 'bottom'
+      }
+    })
+  }
+}
 </script>
 
 <style scoped>
