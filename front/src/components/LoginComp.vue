@@ -32,7 +32,7 @@
             :error-messages="password.errorMessage.value"
           />
 
-          <v-btn type="submit" color="green">登入</v-btn>
+          <v-btn type="submit" color="green" @click="dialog = false" class="w-100">登入</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -96,7 +96,6 @@ const submit = handleSubmit(async (values) => {
       email: values.email,
       password: values.password
     })
-    console.log('data11111111', data)
     userStore.login(data.result)
     createSnackbar({
       text: '登入成功',
@@ -110,7 +109,7 @@ const submit = handleSubmit(async (values) => {
     router.push('/')
     // 回到首頁
   } catch (error) {
-    console.log(error)
+    // console.log('到底是什麼錯誤1', error)
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
       text,
@@ -121,6 +120,7 @@ const submit = handleSubmit(async (values) => {
         location: 'bottom'
       }
     })
+    // console.log('到底是什麼錯誤2', error)
   }
 })
 </script>

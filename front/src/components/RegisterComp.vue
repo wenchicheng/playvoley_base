@@ -40,7 +40,7 @@
             v-model="passwordConfirm.value.value"
             :error-messages="passwordConfirm.errorMessage.value"
           />
-          <v-btn type="submit" color="green">註冊</v-btn>
+          <v-btn type="submit" color="green" class="w-100">註冊</v-btn>
         </v-form>
       </v-col>
     </v-row>

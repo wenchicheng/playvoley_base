@@ -35,36 +35,40 @@
       <template v-else>
         <template v-for="item in navItems" :key="item.to">
           <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
-        </template>
+      </template>
+      <v-btn v-if="!user.isLogin">登入
+        <v-dialog
+        activator="parent"
+        v-model="dialog"
+        transition="dialog-top-transition"
+        width="600">
+          <v-card>
+          <v-tabs
+            v-model="tab"
+            color="#1565C0"
+            class="list-title"
+            fixed-tabs>
+            <v-tab value="login">登入</v-tab>
+            <v-tab value="register">註冊</v-tab>
+          </v-tabs>
+
+          <v-card-text>
+            <v-window v-model="tab">
+              <v-window-item value="login">
+                <LoginComp></LoginComp>
+                <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn>
+              </v-window-item>
+              <v-window-item value="register">
+                <RegisterComp></RegisterComp>
+                <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn>
+              </v-window-item>
+            </v-window>
+          </v-card-text>
+        </v-card>
+        </v-dialog>
+      </v-btn>
         <!-- 登出按鈕 -->
         <v-btn v-if="user.isLogin" @click="logout">登出</v-btn>
-        <!-- 登入視窗 -->
-        <v-dialog transition="dialog-top-transition" width="600">
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" v-if="!user.isLogin">登入</v-btn>
-          </template>
-          <v-card>
-            <v-tabs
-              v-model="tab"
-              color="#1565C0"
-              class="list-title"
-              fixed-tabs>
-              <v-tab value="login">登入</v-tab>
-              <v-tab value="register">註冊</v-tab>
-            </v-tabs>
-
-            <v-card-text>
-              <v-window v-model="tab">
-                <v-window-item value="login">
-                  <LoginComp></LoginComp>
-                </v-window-item>
-                <v-window-item value="register">
-                  <RegisterComp></RegisterComp>
-                </v-window-item>
-              </v-window>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
       </template>
     </v-container>
   </v-app-bar>
@@ -92,6 +96,9 @@ import { useUserStore } from '@/store/user'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useRoute } from 'vue-router'
+
+// 對話框預設關閉
+const dialog = ref(false)
 
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
@@ -134,7 +141,7 @@ const logout = async () => {
         location: 'bottom'
       }
     })
-    router.push('/HomeView') // 登出後回到首頁
+    router.push('/') // 登出後回到首頁
   } catch (error) {
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
