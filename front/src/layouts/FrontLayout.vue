@@ -19,7 +19,7 @@
     </v-list>
   </v-navigation-drawer>
   <!-- 導覽列-------------------------------------------------------------- -->
-  <v-app-bar color="#1565C0">
+  <v-app-bar class="navbar" >
     <v-container class="d-flex align-center">
       <a href="/">
         <v-app-bar-title>
@@ -164,6 +164,10 @@ const logout = async () => {
 
 .list-title {
   font-size: 20px;
+}
+
+.navbar{
+  background-color: rgba(21, 101, 192, 1)
 }
 
 </style>

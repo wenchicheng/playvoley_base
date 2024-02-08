@@ -1,24 +1,31 @@
 <template>
-<v-container class="h-100 d-flex justify-center align-center">
+
   <swiper
     :cssMode="true"
     :navigation="true"
-    :mousewheel="true"
-    :keyboard="true"
+    :loop="true"
+    :autoplay="{
+      delay: 5000,
+      disableOnInteraction: false,
+    }"
     :modules="modules"
     class="mySwiper"
   >
-    <swiper-slide>Slide 1</swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
-    <swiper-slide>Slide 4</swiper-slide>
-    <swiper-slide>Slide 5</swiper-slide>
-    <swiper-slide>Slide 6</swiper-slide>
-    <swiper-slide>Slide 7</swiper-slide>
-    <swiper-slide>Slide 8</swiper-slide>
-    <swiper-slide>Slide 9</swiper-slide>
+    <swiper-slide>
+      <video src="../../assets/video/volley_video_02.mp4" class="d-block" autoplay loop></video>
+    </swiper-slide>
+    <swiper-slide>
+      <video src="../../assets/video/volley_video_01.mp4" class="d-block" autoplay loop></video>
+    </swiper-slide>
+    <swiper-slide>
+      <video src="../../assets/video/volley_video_03.mp4" class="d-block" autoplay loop></video>
+    </swiper-slide>
+    <!-- <div class="swiper-slide">
+        <div class="swiper-image swiper-image01"></div>
+        <div class="overlay"></div>
+    </div> -->
+
   </swiper>
-</v-container>
 </template>
 
 <script setup>
@@ -31,6 +38,20 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 // import required modules
-import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules'
-const modules = [Navigation, Pagination, Mousewheel, Keyboard]
+import { Navigation, Pagination, Mousewheel, Keyboard, Autoplay } from 'swiper/modules'
+const modules = [Navigation, Pagination, Mousewheel, Keyboard, Autoplay]
 </script>
+
+<style scoped>
+.mySwiper {
+  height: calc(100vh - 64px);
+  /* transform: translateY(-64px); */
+}
+
+.swiper-slide video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+</style>
