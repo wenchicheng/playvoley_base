@@ -8,6 +8,8 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/vue3": "^6.1.10",
     "@mdi/font": "7.0.96",
     "axios": "^1.6.7",
     "pinia": "^2.0.23",

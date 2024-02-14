@@ -81,7 +81,7 @@ schema.pre('save', async function (next) {
     // 如果密碼有被修改過，就執行
     if (user.password.length < 4 || user.password.length > 12) {
       const error = new Error.ValidationError(null)
-      error.addError('password', new Error.ValidationError({ message: '密碼長度最少 6 個字，最多 12 個字' }))
+      error.addError('password', new Error.ValidationError({ message: '密碼長度最少 4 個字，最多 12 個字' }))
       next(error)
       return
     }

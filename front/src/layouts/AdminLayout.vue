@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/store/useUserStore'
+import { useUserStore } from '@/store/user'
 import { computed } from 'vue'
 
 const user = useUserStore()

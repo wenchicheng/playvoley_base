@@ -167,7 +167,38 @@ const logout = async () => {
 }
 
 .navbar{
-  background-color: rgba(21, 101, 192, 1)
+  background-color: rgba(21, 101, 192, 1);
+  color:white;
+  font-weight: 600;
 }
+
+/* .swiper-container .swiper-nav-wrapper .swiper-button-next,
+.swiper-container .swiper-nav-wrapper .swiper-button-prev {
+  margin-top: 0;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  border: 1px solid #4d4d4d;
+  width: 35px;
+  height: 70px;
+  background-color: #000;
+  -webkit-transition: .25s ease;
+  transition: .25s ease;
+  z-index: 2
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  width: calc(var(--swiper-navigation-size)/ 44 * 27);
+  height: var(--swiper-navigation-size);
+  margin-top: calc(0px - (var(--swiper-navigation-size)/ 2));
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--swiper-navigation-color, var(--swiper-theme-color))
+} */
 
 </style>
