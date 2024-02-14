@@ -2,169 +2,85 @@
 <v-container class="h-100 d-flex justify-center align-center">
   <h1>AppointmentView</h1>
   <div class="container">
-    <FullCalendar :events="events" :options="{ plugins: [dayGridPlugin] }" />
+    <v-row class="fill-height">
+    <v-col>
+      <v-sheet height="600">
+        <v-calendar
+          ref="calendar"
+          v-model="today"
+          color="primary"
+          type="month"
+          :events="events"
+        ></v-calendar>
+      </v-sheet>
+    </v-col>
+  </v-row>
   </div>
 </v-container>
 </template>
 
 <script setup>
-import { ref, defineComponent } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { INITIAL_EVENTS, createEventId } from './event-utils'
+import { ref, onMounted } from 'vue'
+import { useDate } from 'vuetify'
 
-const calendarOptions = {
-  plugins: [
-    dayGridPlugin,
-    timeGridPlugin,
-    interactionPlugin // needed for dateClick
-  ],
-  headerToolbar: {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-  },
-  initialView: 'dayGridMonth',
-  initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
-  editable: true,
-  selectable: true,
-  selectMirror: true,
-  dayMaxEvents: true,
-  weekends: true,
-  select: handleDateSelect,
-  eventClick: handleEventClick,
-  eventsSet: handleEvents
-}
+const focus = ref('')
+const events = ref([])
+const colors = [
+  'blue',
+  'indigo',
+  'deep-purple',
+  'cyan',
+  'green',
+  'orange',
+  'grey darken-1'
+]
+const names = [
+  'Meeting',
+  'Holiday',
+  'PTO',
+  'Travel',
+  'Event',
+  'Birthday',
+  'Conference',
+  'Party'
+]
 
-const currentEvents = ref([])
+onMounted(() => {
+  const { startOfDay, startOfMonth, endOfDay, endOfMonth } = useDate()
+  fetchEvents({
+    start: startOfDay(startOfMonth(new Date())),
+    end: endOfDay(endOfMonth(new Date()))
+  })
+})
 
-function handleWeekendsToggle () {
-  calendarOptions.weekends = !calendarOptions.weekends // update a property
-}
+function fetchEvents ({ start, end }) {
+  const eventsArray = []
 
-function handleDateSelect (selectInfo) {
-  const title = prompt('Please enter a new title for your event')
-  const calendarApi = selectInfo.view.calendar
+  const min = start
+  const max = end
+  const days = (max.getTime() - min.getTime()) / 86400000
+  const eventCount = rnd(days, days + 20)
 
-  calendarApi.unselect() // clear date selection
+  for (let i = 0; i < eventCount; i++) {
+    const allDay = rnd(0, 3) === 0
+    const firstTimestamp = rnd(min.getTime(), max.getTime())
+    const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+    const secondTimestamp = rnd(2, allDay ? 288 : 8) * 900000
+    const second = new Date(first.getTime() + secondTimestamp)
 
-  if (title) {
-    calendarApi.addEvent({
-      id: createEventId(),
-      title,
-      start: selectInfo.startStr,
-      end: selectInfo.endStr,
-      allDay: selectInfo.allDay
+    eventsArray.push({
+      title: names[rnd(0, names.length - 1)],
+      start: first,
+      end: second,
+      color: colors[rnd(0, colors.length - 1)],
+      allDay: !allDay
     })
   }
+
+  events.value = eventsArray
 }
 
-function handleEventClick (clickInfo) {
-  if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-    clickInfo.event.remove()
-  }
+function rnd (a, b) {
+  return Math.floor((b - a + 1) * Math.random()) + a
 }
-
-function handleEvents (events) {
-  currentEvents.value = events
-}
-
 </script>
-
-<template>
-  <div class='demo-app'>
-    <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates and you will be prompted to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div>
-      <div class='demo-app-sidebar-section'>
-        <label>
-          <input
-            type='checkbox'
-            :checked='calendarOptions.weekends'
-            @change='handleWeekendsToggle'
-          />
-          toggle weekends
-        </label>
-      </div>
-      <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for='event in currentEvents' :key='event.id'>
-            <b>{{ event.startStr }}</b>
-            <i>{{ event.title }}</i>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class='demo-app-main'>
-      <FullCalendar
-        class='demo-app-calendar'
-        :options='calendarOptions'
-      >
-        <template v-slot:eventContent='arg'>
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-        </template>
-      </FullCalendar>
-    </div>
-  </div>
-</template>
-
-<style lang='css'>
-
-h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0 0 0 1.5em;
-}
-
-li {
-  margin: 1.5em 0;
-  padding: 0;
-}
-
-b { /* used for event dates/times */
-  margin-right: 3px;
-}
-
-.demo-app {
-  display: flex;
-  min-height: 100%;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-.demo-app-sidebar {
-  width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
-  border-right: 1px solid #d3e2e8;
-}
-
-.demo-app-sidebar-section {
-  padding: 2em;
-}
-
-.demo-app-main {
-  flex-grow: 1;
-  padding: 3em;
-}
-
-.fc { /* the calendar root */
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-</style>

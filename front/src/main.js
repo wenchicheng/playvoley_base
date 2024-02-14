@@ -6,6 +6,7 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+import { createVuetify } from 'vuetify'
 
 // Components
 import App from './App.vue'
@@ -13,14 +14,15 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 
-// 引入 FullCalendar
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-
 const app = createApp(App)
 
 registerPlugins(app)
 
-app.component('FullCalendar', FullCalendar)
-
 app.mount('#app')
+
+export const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'light'
+    //
+  }
+})
