@@ -92,6 +92,36 @@ const routes = [
           login: true,
           admin: true
         }
+      },
+      {
+        path: 'appointments',
+        name: 'AdminAppointments',
+        component: () => import('@/views/admin/AppointmentsView.vue'),
+        meta: {
+          title: '一起來打排 | 預約管理',
+          login: true,
+          admin: true
+        }
+      },
+      {
+        path: 'products',
+        name: 'AdminProducts',
+        component: () => import('@/views/admin/ProductsView.vue'),
+        meta: {
+          title: '一起來打排 | 商品管理',
+          login: true,
+          admin: true
+        }
+      },
+      {
+        path: 'orders',
+        name: 'AdminOrders',
+        component: () => import('@/views/admin/OrdersView.vue'),
+        meta: {
+          title: '一起來打排 | 訂單管理',
+          login: true,
+          admin: true
+        }
       }
     ]
   }

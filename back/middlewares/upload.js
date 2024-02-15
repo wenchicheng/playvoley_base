@@ -11,11 +11,13 @@ cloudinary.config({
 
 const upload = multer({
   storage: new CloudinaryStorage({ cloudinary }),
+  // fileFilter 限制檔案格式
   fileFilter (req, file, callback) {
     if (['image/jpeg', 'image/png'].includes(file.mimetype)) {
       callback(null, true)
     } else {
       callback(new multer.MulterError('LIMIT_FILE_FORMAT'), false)
+      // LIMIT_FILE_FORMAT  套件內建的錯誤代碼
     }
   },
   limits: {

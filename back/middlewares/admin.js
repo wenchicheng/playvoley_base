@@ -1,4 +1,4 @@
-import UserRole from '../models/userRole.js'
+import UserRole from '../enums/userRole.js'
 
 import { StatusCodes } from 'http-status-codes'
 
