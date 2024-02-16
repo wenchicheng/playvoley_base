@@ -19,7 +19,7 @@
     </v-list>
   </v-navigation-drawer>
   <!-- 導覽列-------------------------------------------------------------- -->
-  <v-app-bar class="navbar" >
+  <v-app-bar class="navbar" style="border-bottom: 6px solid #ffd000;">
     <v-container class="d-flex align-center">
       <a href="/">
         <v-app-bar-title>
@@ -35,38 +35,38 @@
       <template v-else>
         <template v-for="item in navItems" :key="item.to">
           <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
-      </template>
-      <v-btn v-if="!user.isLogin">登入
-        <v-dialog
-        activator="parent"
-        v-model="dialog"
-        transition="dialog-top-transition"
-        width="600">
-          <v-card>
-          <v-tabs
-            v-model="tab"
-            color="#1565C0"
-            class="list-title"
-            fixed-tabs>
-            <v-tab value="login">登入</v-tab>
-            <v-tab value="register">註冊</v-tab>
-          </v-tabs>
+        </template>
+        <v-btn v-if="!user.isLogin">登入
+          <v-dialog
+          activator="parent"
+          v-model="dialog"
+          transition="dialog-top-transition"
+          width="600">
+            <v-card>
+            <v-tabs
+              v-model="tab"
+              color="#1565C0"
+              class="list-title"
+              fixed-tabs>
+              <v-tab value="login">登入</v-tab>
+              <v-tab value="register">註冊</v-tab>
+            </v-tabs>
 
-          <v-card-text>
-            <v-window v-model="tab">
-              <v-window-item value="login">
-                <LoginComp></LoginComp>
-                <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn>
-              </v-window-item>
-              <v-window-item value="register">
-                <RegisterComp></RegisterComp>
-                <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn>
-              </v-window-item>
-            </v-window>
-          </v-card-text>
-        </v-card>
-        </v-dialog>
-      </v-btn>
+            <v-card-text>
+              <v-window v-model="tab">
+                <v-window-item value="login">
+                  <LoginComp></LoginComp>
+                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
+                </v-window-item>
+                <v-window-item value="register">
+                  <RegisterComp></RegisterComp>
+                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
+                </v-window-item>
+              </v-window>
+            </v-card-text>
+          </v-card>
+          </v-dialog>
+        </v-btn>
         <!-- 登出按鈕 -->
         <v-btn v-if="user.isLogin" @click="logout">登出</v-btn>
       </template>
@@ -95,14 +95,15 @@ import LoginComp from '@/components/LoginComp.vue'
 import { useUserStore } from '@/store/user'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+// router 跳頁 / route 取資料，useRouter 跳頁導航，而 useRoute 獲取當前這頁的資訊
 
 // 對話框預設關閉
 const dialog = ref(false)
 
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
-const router = useRoute()
+const router = useRouter()
 
 const user = useUserStore()
 
@@ -120,7 +121,7 @@ const navItems = computed(() => {
     { to: '/news', text: '最新消息', show: true },
     { to: '/appointment', text: '預約報名', show: true },
     { to: '/myappointment', text: '我的預約', show: user.isLogin },
-    // { to: '/cart', text: '購物車', show: user.isLogin },
+    { to: '/cart', text: '購物車', show: user.isLogin },
     { to: '/admin', text: '後台管理', show: user.isLogin && user.isAdmin }
   ]
 })
@@ -132,6 +133,8 @@ const logout = async () => {
   try {
     await apiAuth.delete('/users/logout')
     user.logout()
+    // dialog.value = false
+    // 關閉對話框
     createSnackbar({
       text: '登出成功',
       showCloseButton: false,
@@ -143,6 +146,7 @@ const logout = async () => {
     })
     router.push('/') // 登出後回到首頁
   } catch (error) {
+    console.log(error)
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
       text,

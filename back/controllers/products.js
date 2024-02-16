@@ -2,6 +2,7 @@ import products from '../models/products.js'
 import { StatusCodes } from 'http-status-codes'
 import validator from 'validator'
 
+// 新增商品--------------------------------------------------
 export const create = async (req, res) => {
   try {
     req.body.image = req.file.path
@@ -28,14 +29,22 @@ export const create = async (req, res) => {
   }
 }
 
+// 後台用，查所有商品--------------------------------------------------
 export const getAll = async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'createdAt'
+    // sortBy 是排序欄位，預設是 createdAt
     const sortOrder = parseInt(req.query.sortOrder) || -1
+    // 資料排序，sortBy 是排序欄位，sortOrder 是排序方式（1 是升冪，-1 是降冪) ，parseInt() 是將字串轉換為數字
     const itemsPerPage = parseInt(req.query.itemsPerPage) || 20
+    // itemsPerPage 是每頁顯示多少筆資料，預設是 20
     const page = parseInt(req.query.page) || 1
+    // page 是目前在第幾頁，預設是第一頁
     const regex = new RegExp(req.query.search || '', 'i')
+    // 查詢條件，關鍵字查詢 regex 是正則表達式，i 是忽略大小寫
 
+    // 查詢商品資料語法
+    // 1. 查詢 name 或 description 符合 regex 的資料
     const data = await products
       .find({
         $or: [
@@ -43,15 +52,11 @@ export const getAll = async (req, res) => {
           { description: regex }
         ]
       })
-      // const text = 'a'
-      // const obj = { [text]: 1 }
-      // obj.a = 1
+      // 2. 查詢完對結果作排序，[sortBy] => 不是陣列，是把變數的值當成物件的屬性名稱key
       .sort({ [sortBy]: sortOrder })
-      // 如果一頁 10 筆
-      // 第 1 頁 = 0 ~ 10 = 跳過 0 筆 = (1 - 1) * 10
-      // 第 2 頁 = 11 ~ 20 = 跳過 10 筆 = (2 - 1) * 10
-      // 第 3 頁 = 21 ~ 30 = 跳過 20 筆 = (3 - 1) * 10
+      // 3.跳過多少筆資料，如果1頁10筆，第1頁是 (1-1)*10，第2頁是 (2-1)*10 ，第3頁是 (3-1)*10，以此類推
       .skip((page - 1) * itemsPerPage)
+      // 4. 限制一頁幾筆資料
       .limit(itemsPerPage === -1 ? undefined : itemsPerPage)
 
     // estimatedDocumentCount() 計算總資料數
@@ -72,24 +77,30 @@ export const getAll = async (req, res) => {
   }
 }
 
+// 前台用，只查有上架的商品--------------------------------------------------
 export const get = async (req, res) => {
 
 }
 
+// 取得單一商品--------------------------------------------------
 export const getId = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID')
+    // 檢查請求的參數 id 是否為有效的 MongoDB ID
 
     const result = await products.findById(req.params.id)
 
+    // 如果找不到商品（即 result 為 null 或 undefined）
     if (!result) throw new Error('NOT FOUND')
 
+    // 如果找到商品，則將 HTTP 狀態碼設置為 OK（200），並回傳商品資料
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',
       result
     })
   } catch (error) {
+    console.log(error)
     if (error.name === 'CastError' || error.message === 'ID') {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,

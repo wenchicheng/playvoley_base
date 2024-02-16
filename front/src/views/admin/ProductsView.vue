@@ -10,6 +10,7 @@
         <!-- 點擊"新增商品"的時候，執行 openDialog -->
       </v-col>
       <v-col cols="12">
+        <!-- 表格---------------------------------- -->
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
           v-model:sort-by="tableSortBy"
@@ -45,7 +46,7 @@
         </v-data-table-server>
       </v-col>
     </v-row>
-    <v-dialog v-model="dialog" persistent width="500px">
+    <v-dialog v-model="dialog" persistent width="600px">
       <v-form :disabled="isSubmitting" @submit.prevent="submit">
         <v-card>
           <v-card-title>{{ dialogId === '' ? '新增商品' : '編輯商品' }}</v-card-title>
@@ -103,6 +104,7 @@
 
 <script setup>
 import { ref } from 'vue'
+// yup 驗證表單 vee-validate 驗證套件
 import * as yup from 'yup'
 import { useForm, useField } from 'vee-validate'
 import { useApi } from '@/composables/axios'
@@ -112,6 +114,9 @@ const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
 const fileAgent = ref(null)
+// 給元件一個ref="fileAgent" 取得 vue-file-agent 的實例元件，
+// 再建立同名的 ref(null)，就可使用元件的ref的fileAgent.value，
+// 並呼叫裡面的function "deleteFileRecord()"
 
 // 表單對話框的開啟狀態，預設關閉
 const dialog = ref(false)
@@ -132,16 +137,18 @@ const openDialog = (item) => {
   }
   dialog.value = true
 }
-// 關閉對話框
+// 關閉對話框---------------------------------------------------------------
 const closeDialog = () => {
   dialog.value = false
   resetForm()
   fileAgent.value.deleteFileRecord()
+  // deleteFileRecord() 刪除檔案
 }
 
-// 分類
-const categories = ['衣服', '食品', '3C', '遊戲']
-// 表單驗證
+// 分類---------------------------------------------------------------------
+const categories = ['排球衣', '排球褲', '排球襪', '配件']
+
+// 表單驗證-----------------------------------------------------------------
 const schema = yup.object({
   name: yup
     .string()
@@ -158,11 +165,14 @@ const schema = yup.object({
     .string()
     .required('缺少商品分類')
     .test('isCategory', '商品分類錯誤', value => categories.includes(value)),
+  // .test(自訂驗證名稱,錯誤訊息,驗證函式)
   sell: yup
     .boolean()
 })
+// handleSubmit 送出表單  發請求 isSubmitting 判斷是否正在送出  resetForm 重置表單每次打開都是新的值
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
+  // 設定初始值
   initialValues: {
     name: '',
     price: 0,
@@ -171,6 +181,8 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     sell: false
   }
 })
+
+// 表單欄位的 useField
 const name = useField('name')
 const price = useField('price')
 const description = useField('description')
@@ -185,22 +197,29 @@ const submit = handleSubmit(async (values) => {
   if (dialogId.value === '' && fileRecords.value.length === 0) return
   try {
     // 建立 FormData 物件
-    // 使用 fd.append(欄位, 值) 將資料放進去
+    // 使用 fd.append(欄位, 值) 將資料放進去------------------------------------
     const fd = new FormData()
-    for (const key in values) {
-      fd.append(key, values[key])
-    }
+    fd.append('name', values.name)
+    fd.append('price', values.price)
+    fd.append('description', values.description)
+    fd.append('category', values.category)
+    fd.append('sell', values.sell)
+
+    // 也可以用 for in：
+    // for (const key in values) {
+    //   fd.append(key, values[key])
+    // }
 
     if (fileRecords.value.length > 0) {
       fd.append('image', fileRecords.value[0].file)
     }
-
+    // 送出表單--------------------------------------------------------------
     if (dialogId.value === '') {
       await apiAuth.post('/products', fd)
     } else {
       await apiAuth.patch('/products/' + dialogId.value, fd)
     }
-
+    // 顯示成功訊息-----------------------------------------------------------
     createSnackbar({
       text: dialogId.value === '' ? '新增成功' : '編輯成功',
       showCloseButton: false,
@@ -227,9 +246,9 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
-// 表格每頁幾個
+// 表格每頁10個商品-------------------------------------------------------
 const tableItemsPerPage = ref(10)
-// 表格排序
+// 表格排序，desc 降冪，asc 升冪
 const tableSortBy = ref([
   { key: 'createdAt', order: 'desc' }
 ])
