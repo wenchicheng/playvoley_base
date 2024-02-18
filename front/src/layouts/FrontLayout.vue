@@ -121,7 +121,7 @@ const navItems = computed(() => {
     { to: '/news', text: '最新消息', show: true },
     { to: '/appointment', text: '預約報名', show: true },
     { to: '/myappointment', text: '我的預約', show: user.isLogin },
-    { to: '/cart', text: '購物車', show: user.isLogin },
+    { to: '/shop', text: '排球選物', show: user.isLogin },
     { to: '/admin', text: '後台管理', show: user.isLogin && user.isAdmin }
   ]
 })

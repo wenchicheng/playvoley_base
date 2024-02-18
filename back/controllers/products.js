@@ -2,7 +2,7 @@ import products from '../models/products.js'
 import { StatusCodes } from 'http-status-codes'
 import validator from 'validator'
 
-// 新增商品--------------------------------------------------
+// 新增商品====================================================================
 export const create = async (req, res) => {
   try {
     req.body.image = req.file.path
@@ -29,7 +29,7 @@ export const create = async (req, res) => {
   }
 }
 
-// 後台用，查所有商品--------------------------------------------------
+// 後台用，查所有商品============================================================
 export const getAll = async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'createdAt'
@@ -77,12 +77,12 @@ export const getAll = async (req, res) => {
   }
 }
 
-// 前台用，只查有上架的商品--------------------------------------------------
+// 前台用，只查有上架的商品=======================================================
 export const get = async (req, res) => {
 
 }
 
-// 取得單一商品--------------------------------------------------
+// 取得單一商品=================================================================
 export const getId = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID')
@@ -120,10 +120,14 @@ export const getId = async (req, res) => {
   }
 }
 
+// 編輯商品====================================================================
 export const edit = async (req, res) => {
   try {
+    // 檢查網址的 id 是否為有效的 MongoDB ID，若無效則拋出ID錯誤
     if (!validator.isMongoId(req.params.id)) throw new Error('ID')
 
+    // 以ID去查商品，並更新商品資料(要查的東西,要更新的內容,要不要在更新的時候執行驗證)
+    // orFail  如果ID格式不對，會拋出錯誤，並且不會執行下面的程式碼
     req.body.image = req.file?.path
     await products.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }).orFail(new Error('NOT FOUND'))
 

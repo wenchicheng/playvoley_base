@@ -21,7 +21,7 @@ const schema = new Schema({
     type: String,
     required: [true, '缺少商品分類'],
     enum: {
-      values: ['排球衣', '排球褲', '排球襪', '配件'],
+      values: ['排球衣', '排球褲', '排球襪', '排球鞋', '球具', '配件'],
       message: '商品分類錯誤'
     }
   },

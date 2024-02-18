@@ -6,11 +6,16 @@
       </v-col>
       <v-divider></v-divider>
       <v-col cols="12">
-        <v-btn color="green" @click="openDialog()">新增商品</v-btn>
-        <!-- 點擊"新增商品"的時候，執行 openDialog -->
-      </v-col>
-      <v-col cols="12">
-        <!-- 表格---------------------------------- -->
+        <!-- 表格
+        tableItemsPerPage 每頁顯示的項目數量
+        tablePage 頁碼
+        tableProducts 商品資料陣列
+        tableHeaders 表頭
+        tableLoading 是否載入狀態
+        tableItemsLength 全部資料數
+        tableSearch 搜尋字串
+        tableLoadItems 載入資料
+      -->
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
           v-model:sort-by="tableSortBy"
@@ -26,22 +31,36 @@
           hover
         >
           <template v-slot:top>
-            <v-text-field
-              label="搜尋"
-              append-icon="mdi-magnify"
-              v-model="tableSearch"
-              @click:append="tableApplySearch"
-              @keydown.enter="tableApplySearch"
-            ></v-text-field>
+            <v-row>
+              <v-col cols="2">
+              <v-btn
+              prepend-icon="mdi-plus"
+              color="#1565C0"
+              height="56"
+              rounded="lg"
+              @click="openDialog()">新增商品</v-btn>
+              <!-- 點擊"新增商品"的時候，執行 openDialog -->
+              </v-col>
+              <v-col cols="10">
+                <v-text-field
+                label="搜尋"
+                append-icon="mdi-magnify"
+                v-model="tableSearch"
+                @click:append="tableApplySearch"
+                @keydown.enter="tableApplySearch"
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </template>
-          <template v-slot:item.image="{ item }">
-            <v-img :src="item.image" height="50px"></v-img>
+          <!-- 欄位顯示方式 item.後面接key值-->
+          <template #[`item.image`]="{ item }">
+            <v-img :src="item.image" height="60px"></v-img>
           </template>
-          <template v-slot:item.sell="{ item }">
+          <template #[`item.sell`]="{ item }">
             <v-icon v-if="item.sell">mdi-check</v-icon>
           </template>
-          <template v-slot:item.edit="{ item }">
-            <v-btn icon="mdi-pencil" variant="text" color="blue" @click="openDialog(item)"></v-btn>
+          <template #[`item.edit`]="{ item }">
+            <v-btn icon="mdi-pencil" variant="text" color="#1565C0" @click="openDialog(item)"></v-btn>
           </template>
         </v-data-table-server>
       </v-col>
@@ -123,7 +142,7 @@ const dialog = ref(false)
 // 表單對話框正在編輯的商品 ID，空的話代表是新增商品
 const dialogId = ref('')
 
-// 點擊"新增商品"的時候，打開編輯對話框
+// 點擊"新增商品"的時候，打開編輯對話框，並自動帶入資訊
 const openDialog = (item) => {
   if (item) {
     dialogId.value = item._id
@@ -146,7 +165,7 @@ const closeDialog = () => {
 }
 
 // 分類---------------------------------------------------------------------
-const categories = ['排球衣', '排球褲', '排球襪', '配件']
+const categories = ['排球衣', '排球褲', '排球襪', '排球鞋', '球具', '配件']
 
 // 表單驗證-----------------------------------------------------------------
 const schema = yup.object({
@@ -192,8 +211,10 @@ const sell = useField('sell')
 const fileRecords = ref([])
 const rawFileRecords = ref([])
 
+// 提交資料時
 const submit = handleSubmit(async (values) => {
   if (fileRecords.value[0]?.error) return
+  // 如果是新增，而且檔案長度是0，就不送出
   if (dialogId.value === '' && fileRecords.value.length === 0) return
   try {
     // 建立 FormData 物件
@@ -229,6 +250,7 @@ const submit = handleSubmit(async (values) => {
         location: 'bottom'
       }
     })
+    // 表格更新並回到第一頁
     closeDialog()
     tableApplySearch()
   } catch (error) {
@@ -246,7 +268,7 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
-// 表格每頁10個商品-------------------------------------------------------
+// 表格    每頁10個商品-------------------------------------------------------
 const tableItemsPerPage = ref(10)
 // 表格排序，desc 降冪，asc 升冪
 const tableSortBy = ref([
@@ -259,10 +281,10 @@ const tableProducts = ref([])
 // 表格欄位設定
 const tableHeaders = [
   { title: '圖片', align: 'center', sortable: false, key: 'image' },
-  { title: '名稱', align: 'center', sortable: true, key: 'name' },
+  { title: '名稱', align: 'left', sortable: true, key: 'name' },
   { title: '價格', align: 'center', sortable: true, key: 'price' },
-  // { title: '說明', align: 'center', sortable: true, key: 'description' },
   { title: '分類', align: 'center', sortable: true, key: 'category' },
+  // { title: '說明', align: 'center', sortable: true, key: 'description' },
   { title: '上架', align: 'center', sortable: true, key: 'sell' },
   { title: '編輯', align: 'center', sortable: false, key: 'edit' }
 ]
@@ -274,6 +296,7 @@ const tableItemsLength = ref(0)
 const tableSearch = ref('')
 // 表格載入資料
 const tableLoadItems = async () => {
+  // 載入中
   tableLoading.value = true
   try {
     const { data } = await apiAuth.get('/products/all', {
@@ -300,10 +323,11 @@ const tableLoadItems = async () => {
       }
     })
   }
+  // 載入完畢
   tableLoading.value = false
 }
 tableLoadItems()
-// 表格套用搜尋
+// 表格套用搜尋------------------------------------------------
 const tableApplySearch = () => {
   tablePage.value = 1
   tableLoadItems()

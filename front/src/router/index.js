@@ -1,6 +1,7 @@
 // Composables
 import { createRouter, createWebHashHistory, START_LOCATION } from 'vue-router'
 import { useUserStore } from '@/store/user'
+import { fa } from 'vuetify/lib/locale/index.mjs'
 
 const routes = [
   {
@@ -44,6 +45,16 @@ const routes = [
         meta: {
           title: '一起來打排 | 我的預約',
           login: true,
+          admin: false
+        }
+      },
+      {
+        path: 'shop',
+        name: 'Shop',
+        component: () => import('@/views/front/ShopView.vue'),
+        meta: {
+          title: '一起來打排 | 排球選物',
+          login: false,
           admin: false
         }
       },
