@@ -59,7 +59,7 @@ export const getAll = async (req, res) => {
       // 4. 限制一頁幾筆資料
       .limit(itemsPerPage === -1 ? undefined : itemsPerPage)
 
-    // estimatedDocumentCount() 計算總資料數
+    // estimatedDocumentCount() 計算總資料數，這裡不適用 / countDocuments() 是依照()內篩選查詢符合條件的資料數，而不是全部資料數
     const total = await products.estimatedDocumentCount()
     res.status(StatusCodes.OK).json({
       success: true,
@@ -109,8 +109,8 @@ export const get = async (req, res) => {
       // 4. 限制一頁幾筆資料
       .limit(itemsPerPage === -1 ? undefined : itemsPerPage)
 
-    // estimatedDocumentCount() 計算總資料數
-    const total = await products.estimatedDocumentCount()
+    // estimatedDocumentCount() 計算總資料數，這裡不適用 / countDocuments() 是依照()內篩選查詢符合條件的資料數，而不是全部資料數
+    const total = await products.countDocuments({ sell: true })
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',

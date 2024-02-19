@@ -1,9 +1,13 @@
 <template>
-<v-container class="h-100 d-flex justify-center align-center">
-  <h1>ShopView</h1>
-  <v-col v-for="product in products" :key="product._id" cols="12" md="6" lg="3">
-  <ProductCard v-bind="product" />
-  </v-col>
+<v-container class="h-100 d-flex justify-center align-center" style="width: 70%;">
+  <v-row>
+    <!-- <h1>ShopView</h1> -->
+  </v-row>
+  <v-row>
+    <v-col v-for="product in products" :key="product._id" cols="12" md="6" lg="3">
+    <ProductCard v-bind="product" class="mb-4 mb-4 ml-2 mr-2" />
+    </v-col>
+  </v-row>
 </v-container>
 </template>
 
@@ -24,6 +28,7 @@ onMounted(async () => {
   try {
     const { data } = await api.get('/products', {
       params: {
+        // 預設20筆資料，-1是全部
         itemsPerPage: -1
       }
     })

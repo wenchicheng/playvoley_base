@@ -32,7 +32,7 @@
         >
           <template v-slot:top>
             <v-row>
-              <v-col cols="2">
+              <v-col cols="2" xl="1" md="2" sm="4">
               <v-btn
               prepend-icon="mdi-plus"
               color="#1565C0"
@@ -41,7 +41,7 @@
               @click="openDialog()">新增商品</v-btn>
               <!-- 點擊"新增商品"的時候，執行 openDialog -->
               </v-col>
-              <v-col cols="10">
+              <v-col cols="10" xl="11" md="10" sm="8">
                 <v-text-field
                 label="搜尋"
                 append-icon="mdi-magnify"

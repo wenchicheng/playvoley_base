@@ -173,6 +173,7 @@ const logout = async () => {
 .navbar{
   background-color: rgba(21, 101, 192, 1);
   color:white;
+  /* height: 64px; */
   font-weight: 600;
 }
 
