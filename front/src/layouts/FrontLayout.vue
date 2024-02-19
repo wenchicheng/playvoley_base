@@ -2,20 +2,38 @@
 <!-- 手機版側欄 -------------------------------------------------------------->
   <v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
     <v-list>
+      <div class="d-flex justify-center mt-2 mb-4">
+        <v-btn to="/login" v-if="!user.isLogin"
+        class="d-flex align-center justify-center login">
+        登入
+        </v-btn>
+      </div>
+      <div class="d-flex justify-center mt-2 mb-4">
+        <v-btn to="/register" v-if="!user.isLogin"
+        class="d-flex align-center justify-center register">
+        註冊
+        </v-btn>
+      </div>
+      <div class="d-flex justify-center mt-2 mb-4">
+        <v-btn @click="logout" v-if="user.isLogin"
+        class="d-flex align-center justify-center logout">
+        登出
+        </v-btn>
+      </div>
       <template v-for="item in navItems" :key="item.to">
         <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
           <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
         </v-list-item>
       </template>
-      <v-list-item to="/login" class="d-flex align-center justify-center" v-if="!user.isLogin">
+      <!-- <v-list-item to="/login" class="d-flex align-center justify-center" v-if="!user.isLogin">
         <v-list-item-title class="list-title">登入</v-list-item-title>
-      </v-list-item>
-      <v-list-item to="/register" class="d-flex align-center justify-center" v-if="!user.isLogin">
+      </v-list-item> -->
+      <!-- <v-list-item to="/register" class="d-flex align-center justify-center" v-if="!user.isLogin">
         <v-list-item-title class="list-title">註冊</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="logout" class="d-flex align-center justify-center" v-if="user.isLogin">
+      </v-list-item> -->
+      <!-- <v-list-item @click="logout" class="d-flex align-center justify-center" v-if="user.isLogin">
         <v-list-item-title class="list-title">登出</v-list-item-title>
-      </v-list-item>
+      </v-list-item> -->
     </v-list>
   </v-navigation-drawer>
   <!-- 導覽列-------------------------------------------------------------- -->
@@ -175,6 +193,24 @@ const logout = async () => {
   color:white;
   /* height: 64px; */
   font-weight: 600;
+}
+
+.login,
+.register,
+.logout{
+  width: 50%;
+  height: 48px;
+  font-size: 20px;
+  border-radius: 1.25rem; /* equivalent to 'xl' in Vuetify */
+  /* background-color: #BBDEFB; */
+  box-shadow: none;
+  border: 2px solid rgba(21, 101, 192, 0.5);
+}
+.login:hover,
+.register:hover,
+.logout:hover{
+  background-color: rgba(21, 101, 192, 1);
+  color: white;
 }
 
 /* .swiper-container .swiper-nav-wrapper .swiper-button-next,

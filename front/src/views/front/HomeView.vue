@@ -47,6 +47,7 @@ const modules = [Navigation, Pagination, Autoplay, EffectFade]
 <style scoped>
 .mySwiper {
   height: calc(100vh - 64px);
+  /* background: linear-gradient(to top, rgba(23, 9, 7, 0) 0%, rgb(23, 9, 7) 100%); */
   /* transform: translateY(-64px); */
 }
 

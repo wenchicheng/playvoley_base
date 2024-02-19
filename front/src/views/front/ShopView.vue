@@ -1,11 +1,15 @@
 <template>
-<v-container class="h-100 d-flex justify-center align-center" style="width: 70%;">
+<v-container
+class="h-100 d-flex justify-center align-center"
+:style="{ width: getContainerWidth() }">
   <v-row>
-    <!-- <h1>ShopView</h1> -->
-  </v-row>
-  <v-row>
-    <v-col v-for="product in products" :key="product._id" cols="12" md="6" lg="3">
-    <ProductCard v-bind="product" class="mb-4 mb-4 ml-2 mr-2" />
+    <v-col cols="12">
+        <h1 class="text-center mt-15 mb-5">所有商品</h1>
+    </v-col>
+    <v-col v-for="product in products"
+    :key="product._id"
+    :cols="getCols()">
+    <ProductCard v-bind="product" />
     </v-col>
   </v-row>
 </v-container>
@@ -51,4 +55,31 @@ onMounted(async () => {
     })
   }
 })
+
+// 設定container的寬度
+const getContainerWidth = () => {
+  const screenWidth = window.innerWidth
+  if (screenWidth >= 1200) {
+    return '70%'
+  } else if (screenWidth >= 960) {
+    return '80%'
+  } else if (screenWidth >= 600) {
+    return '85%'
+  } else {
+    return '90%'
+  }
+}
+
+const getCols = () => {
+  const screenWidth = window.innerWidth
+  if (screenWidth >= 1200) {
+    return 4 // xl
+  } else if (screenWidth >= 960) {
+    return 3 // lg
+  } else if (screenWidth >= 600) {
+    return 6 // md
+  } else {
+    return 12 // sm
+  }
+}
 </script>
