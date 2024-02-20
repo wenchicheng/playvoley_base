@@ -4,6 +4,8 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import routeUsers from './routes/users.js'
 import routeProducts from './routes/products.js'
+import routeAppointments from './routes/appointments.js'
+// import routeOrders from './routes/orders.js'
 import { StatusCodes } from 'http-status-codes'
 import './passport/passport.js'
 
@@ -12,9 +14,9 @@ const app = express()
 // CORS 跨域請求(指瀏覽器，非後端，後端不會有跨域問題，postman 會顯示 undefined)
 app.use(cors({
   // origin = 請求的來源
-  // callback (錯誤,是否允許請求)
+  // callback(錯誤, 是否允許)
   origin (origin, callback) {
-    if (origin === undefined || origin.includes('github.io') || origin.includes('localhost')) {
+    if (origin === undefined || origin.includes('rechilab.com') || origin.includes('localhost')) {
       callback(null, true)
     } else {
       callback(new Error('CORS'), false)
@@ -41,6 +43,8 @@ app.use((_, req, res, next) => {
 
 app.use('/users', routeUsers)
 app.use('/products', routeProducts)
+app.use('/appointments', routeAppointments)
+// app.use('/orders', routeOrders)
 
 app.all('*', (req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({
@@ -48,8 +52,6 @@ app.all('*', (req, res) => {
     message: '找不到'
   })
 })
-// app.all => 任意請求方式  ， '*' => 任意路徑
-// app.all('*',(req, res) =>  任意請求的任意路徑(沒有寫的路徑)執行 function 回應404找不到
 
 app.listen(process.env.PORT || 4000, async () => {
   console.log('伺服器啟動')

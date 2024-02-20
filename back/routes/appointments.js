@@ -1,11 +1,13 @@
 import { Router } from 'express'
 import * as auth from '../middlewares/auth.js'
-import { createAppointment } from '../controllers/appointments.js'
+import { create, edit, getAll, get } from '../controllers/appointments.js'
 import admin from '../middlewares/admin.js'
 
 const router = Router()
 
-router.post('/', auth.jwt, admin, createAppointment)
-// 驗證有沒有登入jwt > 管理員驗證判斷權限 > 創建預約時間塞進資料庫
+router.post('/', auth.jwt, admin, create)
+router.get('/all', auth.jwt, admin, getAll)
+router.patch('/:id', auth.jwt, admin, edit)
+router.get('/', get)
 
 export default router

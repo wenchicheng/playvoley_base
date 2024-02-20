@@ -10,6 +10,7 @@
         :key="item.to"
         :to="item.to"
         :title="item.text"
+        :prepend-icon="item.icon"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -26,9 +27,10 @@ import { computed } from 'vue'
 const user = useUserStore()
 
 const navItems = [
-  { to: '/admin/appointment', text: '預約管理', show: user.isLogin && user.isAdmin },
-  { to: '/admin/products', text: '商品管理', show: user.isLogin && user.isAdmin },
-  { to: '/admin/orders', text: '訂單管理', show: user.isLogin && user.isAdmin },
+  { to: '/admin/appointments', text: '開放時段', show: user.isLogin && user.isAdmin, icon: 'mdi-clock' },
+  { to: '/admin/appointorders', text: '預約管理', show: user.isLogin && user.isAdmin, icon: 'mdi-calendar-clock' },
+  { to: '/admin/products', text: '商品管理', show: user.isLogin && user.isAdmin, icon: 'mdi-plus' },
+  { to: '/admin/orders', text: '訂單管理', show: user.isLogin && user.isAdmin, icon: 'mdi-cart' },
   { to: '/', text: '回首頁', icon: 'mdi-home' }
 ]
 

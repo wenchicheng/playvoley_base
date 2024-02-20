@@ -109,6 +109,16 @@ const routes = [
         name: 'AdminAppointments',
         component: () => import('@/views/admin/AppointmentsView.vue'),
         meta: {
+          title: '一起來打排 | 開放時段管理',
+          login: true,
+          admin: true
+        }
+      },
+      {
+        path: 'appointorders',
+        name: 'AdminAppointorders',
+        component: () => import('@/views/admin/AppointordersView.vue'),
+        meta: {
           title: '一起來打排 | 預約管理',
           login: true,
           admin: true
