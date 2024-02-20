@@ -1,10 +1,9 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="row">
       <v-col cols="12">
-        <h1 class="text-center">開放時段管理</h1>
+        <h1 class="text-center mt-4">開放時段管理</h1>
       </v-col>
-      <v-divider></v-divider>
       <v-col cols="12">
 
         <v-data-table-server
@@ -27,8 +26,10 @@
               <v-btn
               prepend-icon="mdi-plus"
               color="#1565C0"
-              height="56"
-              rounded="lg"
+              height="40"
+              rounded="xl"
+              block
+              class="mt-3"
               @click="addAppointDialog()">新增時段</v-btn>
 
               </v-col>
@@ -37,6 +38,7 @@
                 label="搜尋"
                 append-icon="mdi-magnify"
                 v-model="tableSearch"
+                variant="underlined"
                 @click:append="tableApplySearch"
                 @keydown.enter="tableApplySearch"
                 ></v-text-field>
@@ -327,3 +329,18 @@ const tableApplySearch = () => {
   tableLoadItems()
 }
 </script>
+
+<style scoped>
+
+.row{
+  width: 80%;
+  margin: 0 auto;
+}
+.v-data-table__thead {
+  font-weight: bold;
+}
+.v-data-table {
+    background-color: rgb(224, 236, 246);
+    font-weight: bold;
+}
+</style>

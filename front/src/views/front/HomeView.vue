@@ -1,5 +1,5 @@
 <template>
-
+<div class="context">
   <swiper
     :spaceBetween="30"
     :effect="'fade'"
@@ -27,6 +27,8 @@
     </div> -->
 
   </swiper>
+</div>
+
 </template>
 
 <script setup>
@@ -45,8 +47,20 @@ const modules = [Navigation, Pagination, Autoplay, EffectFade]
 </script>
 
 <style scoped>
+.context  {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* position: relative; */
+  /* bottom: 0; */
+}
+
 .mySwiper {
-  height: calc(100vh - 64px);
+  /* height: calc(100vh - 64px); */
+  height:100vh;
+  /* transform: translateY(-64px); */
   /* background: linear-gradient(to top, rgba(23, 9, 7, 0) 0%, rgb(23, 9, 7) 100%); */
   /* transform: translateY(-64px); */
 }

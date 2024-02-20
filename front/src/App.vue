@@ -83,8 +83,9 @@ export default {
 </script>
 
 <style scoped>
+
 .bg-color {
-  background-color: #eceef1;
+  background-color: rgb(224, 236, 246);
 }
 
 .mouse {
@@ -95,7 +96,7 @@ export default {
 .circle {
   position: fixed;
   transform: translate(-50%, -50%);
-  z-index:10;
+  z-index:100;
   pointer-events: none;
 }
 

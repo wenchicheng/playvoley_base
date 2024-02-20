@@ -1,10 +1,9 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="row">
       <v-col cols="12">
-        <h1 class="text-center">商品管理</h1>
+        <h1 class="text-center mt-4">商品管理</h1>
       </v-col>
-      <v-divider></v-divider>
       <v-col cols="12">
         <!-- 表格
         tableItemsPerPage 每頁顯示的項目數量
@@ -32,20 +31,23 @@
         >
           <template v-slot:top>
             <v-row>
-              <v-col cols="2" xl="1" md="2" sm="4">
+              <v-col cols="3" xl="2" md="2" sm="4">
               <v-btn
               prepend-icon="mdi-plus"
               color="#1565C0"
-              height="56"
-              rounded="lg"
+              height="40"
+              rounded="xl"
+              block
+              class="mt-3"
               @click="openDialog()">新增商品</v-btn>
               <!-- 點擊"新增商品"的時候，執行 openDialog -->
               </v-col>
-              <v-col cols="10" xl="11" md="10" sm="8">
+              <v-col cols="9" xl="10" md="10" sm="8">
                 <v-text-field
                 label="搜尋"
                 append-icon="mdi-magnify"
                 v-model="tableSearch"
+                variant="underlined"
                 @click:append="tableApplySearch"
                 @keydown.enter="tableApplySearch"
                 ></v-text-field>
@@ -333,3 +335,18 @@ const tableApplySearch = () => {
   tableLoadItems()
 }
 </script>
+
+<style scoped>
+
+.row{
+  width: 80%;
+  margin: 0 auto;
+}
+.v-data-table__thead {
+  font-weight: bold;
+}
+.v-data-table {
+    background-color: rgb(224, 236, 246);
+    font-weight: bold;
+}
+</style>

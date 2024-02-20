@@ -1,6 +1,6 @@
 <template>
-<!-- 手機版側欄 -------------------------------------------------------------->
-  <v-navigation-drawer v-model="drawer" temporary location="right" v-if="isMobile">
+  <!-- 手機板和電腦版導航列共用的 drawer -->
+  <v-navigation-drawer v-model="drawer" temporary location="right">
     <v-list>
       <div class="d-flex justify-center mt-2 mb-4">
         <v-btn to="/login" v-if="!user.isLogin"
@@ -25,80 +25,26 @@
           <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
         </v-list-item>
       </template>
-      <!-- <v-list-item to="/login" class="d-flex align-center justify-center" v-if="!user.isLogin">
-        <v-list-item-title class="list-title">登入</v-list-item-title>
-      </v-list-item> -->
-      <!-- <v-list-item to="/register" class="d-flex align-center justify-center" v-if="!user.isLogin">
-        <v-list-item-title class="list-title">註冊</v-list-item-title>
-      </v-list-item> -->
-      <!-- <v-list-item @click="logout" class="d-flex align-center justify-center" v-if="user.isLogin">
-        <v-list-item-title class="list-title">登出</v-list-item-title>
-      </v-list-item> -->
     </v-list>
   </v-navigation-drawer>
-  <!-- 導覽列-------------------------------------------------------------- -->
-  <v-app-bar class="navbar" style="border-bottom: 6px solid #ffd000;">
+
+  <v-app-bar
+  :elevation="0"
+  :class="{ 'navbar': isScrolled }"
+  :style="{ backgroundColor: isScrolled ? 'rgba(224, 236, 246, 1)' : 'rgba(224, 236, 246, 0)' }"
+  >
     <v-container class="d-flex align-center">
       <a href="/">
         <v-app-bar-title>
-          <img src="@/assets/logo-04.png" alt="一起來打排" style="height: 40px">
+          <img src="@/assets/logo-05.png" alt="一起來打排" style="height: 40px">
         </v-app-bar-title>
       </a>
-      <v-spacer></v-spacer>
-      <!-- 手機板導覽列 -->
-      <template v-if="isMobile">
-        <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      </template>
-      <!-- 電腦版導覽列 -->
-      <template v-else>
-        <template v-for="item in navItems" :key="item.to">
-          <v-btn :to="item.to" v-if="item.show">{{ item.text }}</v-btn>
-        </template>
-        <v-btn v-if="!user.isLogin">登入
-          <v-dialog
-          activator="parent"
-          v-model="dialog"
-          transition="dialog-top-transition"
-          width="600">
-            <v-card>
-            <v-tabs
-              v-model="tab"
-              color="#1565C0"
-              class="list-title"
-              fixed-tabs>
-              <v-tab value="login">登入</v-tab>
-              <v-tab value="register">註冊</v-tab>
-            </v-tabs>
-
-            <v-card-text>
-              <v-window v-model="tab">
-                <v-window-item value="login">
-                  <LoginComp></LoginComp>
-                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
-                </v-window-item>
-                <v-window-item value="register">
-                  <RegisterComp></RegisterComp>
-                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
-                </v-window-item>
-              </v-window>
-            </v-card-text>
-          </v-card>
-          </v-dialog>
-        </v-btn>
-        <!-- 登出按鈕 -->
-        <v-btn v-if="user.isLogin" @click="logout">登出</v-btn>
-      </template>
+      <!-- <v-spacer></v-spacer> -->
     </v-container>
+      <!-- 導航按鈕 -->
+      <v-app-bar-nav-icon @click="drawer = true" class="menu-btn"></v-app-bar-nav-icon>
   </v-app-bar>
 
-    <!-- 綁定表達式
-    <v-btn :to="item.to" :prepend-icon="item.icon">{{ item.text }}</v-btn>
-    :key  key 屬性綁定到 item.to 的值，當使用 v-for 時，每一個生成的元素都應該有一個唯一的 key
-    :to   to 屬性綁定到 item.to 的值，當按鈕被點擊時，應用程式會導航到 item.to 指定的路由
-    :prepend-icon="item.icon" prepend-icon 屬性綁定到 item.icon 的值，當按鈕被點擊時，會顯示 item.icon 指定的圖示
-    {{ item.text }} 插值表達式，它會將 item.text 的值轉換為字串並插入到按鈕的內容中 -->
-
-    <!-- 頁面內容 -->
   <v-main>
     <RouterView></RouterView>
   </v-main>
@@ -132,7 +78,10 @@ const isMobile = computed(() => mobile.value)
 // 手機版惻欄開關
 const drawer = ref(false)
 
-// 導覽列項目
+const tab = ref('login')
+// ref() 會回傳一個響應式的物件，並且會自動將 tab 的值轉換為響應式的資料，這樣當 tab 的值改變時，會自動重新渲染頁面
+
+// 導覽列項目==================================
 const navItems = computed(() => {
   return [
     { to: '/about', text: '場館介紹', show: true },
@@ -144,9 +93,27 @@ const navItems = computed(() => {
   ]
 })
 
-const tab = ref('login')
-// ref() 會回傳一個響應式的物件，並且會自動將 tab 的值轉換為響應式的資料，這樣當 tab 的值改變時，會自動重新渲染頁面
+// 導覽列效果====================================
+const isScrolled = ref(false)
 
+const handleScroll = () => {
+  // 檢查滾動位置，根據需要添加或移除 'navbar' 類
+  if (window.scrollY > 100) {
+    isScrolled.value = true
+  } else {
+    isScrolled.value = false
+  }
+}
+
+// 監聽滾動事件
+window.addEventListener('scroll', handleScroll)
+
+// 在組件被卸載前，移除滾動事件監聽器
+const beforeUnmount = () => {
+  window.removeEventListener('scroll', handleScroll)
+}
+
+// 登出========================================
 const logout = async () => {
   try {
     await apiAuth.delete('/users/logout')
@@ -180,19 +147,37 @@ const logout = async () => {
 </script>
 
 <style scoped>
-.no-hover:hover {
+/* .no-hover:hover {
   background-color: inherit !important;
-}
-
-.list-title {
-  font-size: 20px;
-}
+} */
 
 .navbar{
-  background-color: rgba(21, 101, 192, 1);
-  color:white;
+  color:black;
   /* height: 64px; */
   font-weight: 600;
+  border-bottom: 2px solid rgb(110, 171, 217);
+}
+/* 深度選擇器 */
+.v-main::v-deep {
+    --v-layout-top: 0 !important;
+    --v-layout-bottom: 0 !important;
+}
+
+.menu-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 0;
+  padding: 0;
+  background-color: rgba(110, 171, 217,0.5);
+  color: rgb(250, 253, 255);
+  /* border: 2px solid rgb(110, 171, 217); */
+}
+
+.v-toolbar__content > .v-btn:last-child {
+  margin-inline-end: 40px;
+}
+.list-title {
+  font-size: 20px;
 }
 
 .login,
@@ -204,13 +189,14 @@ const logout = async () => {
   border-radius: 1.25rem; /* equivalent to 'xl' in Vuetify */
   /* background-color: #BBDEFB; */
   box-shadow: none;
-  border: 2px solid rgba(21, 101, 192, 0.5);
+  border: 2px solid rgba(110, 171, 217, 0.5);
 }
 .login:hover,
 .register:hover,
 .logout:hover{
-  background-color: rgba(21, 101, 192, 1);
+  background-color: rgba(110, 171, 217,1);
   color: white;
+
 }
 
 /* .swiper-container .swiper-nav-wrapper .swiper-button-next,
