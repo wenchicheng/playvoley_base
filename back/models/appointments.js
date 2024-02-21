@@ -10,7 +10,7 @@ const schema = new Schema({
   },
   // date: {
   //   type: Date,
-  //   required: [true, '日期，必填']
+  //   required: [true, '日期必填']
   // },
   // time: {
   //   type: String,
@@ -19,10 +19,6 @@ const schema = new Schema({
   //     values: ['', ''],
   //     message: '請選擇時段'
   //   }
-  // },
-  // member: {
-  //   type: String,
-  //   required: [true, '開放人數，必填']
   // },
   peoplenumber: {
     type: Number,
@@ -37,14 +33,14 @@ const schema = new Schema({
       message: '請選擇女網/男網'
     }
   },
-  // info: {
-  //   type: String,
-  //   required: [false, '說明，必填'],
-  //   enum: {
-  //     values: ['新手友善', '限制男女比例', '僅限女生', '僅限男生'],
-  //     message: '請選擇說明敘述'
-  //   }
-  // },
+  info: {
+    type: [String],
+    required: [true, '說明必填'],
+    enum: {
+      values: ['新手友善', '男女混打', '僅限女生', '僅限男生', '宵夜場', '早場', '一般場', '高手場', '未開放', '只開放季打', '徵臨打'],
+      message: '請選擇說明敘述'
+    }
+  },
   online: {
     type: Boolean,
     required: [true, '是否開放報名，必填'],

@@ -1,30 +1,62 @@
 <template>
-  <!-- 手機板和電腦版導航列共用的 drawer -->
-  <v-navigation-drawer v-model="drawer" temporary location="right">
-    <v-list>
+  <v-navigation-drawer
+  v-model="drawer"
+  temporary location="right">
+    <div class="drawer-btn-box">
+      <v-btn @click="drawer = false" class="close-btn" icon="mdi-close" size="large"></v-btn>
+    </div>
+    <v-list class="v-list-centered">
+      <template v-for="item in navItems" :key="item.to">
+        <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
+          <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
+        </v-list-item>
+      </template>
       <div class="d-flex justify-center mt-2 mb-4">
-        <v-btn to="/login" v-if="!user.isLogin"
-        class="d-flex align-center justify-center login">
-        登入
+        <v-btn v-if="!user.isLogin"
+        class="d-flex align-center justify-center login">登入
+          <v-dialog
+          activator="parent"
+          v-model="dialog"
+          transition="dialog-top-transition"
+          width="600">
+            <v-card>
+            <v-tabs
+              v-model="tab"
+              color="#1565C0"
+              class="list-title"
+              fixed-tabs>
+              <v-tab value="login">登入</v-tab>
+              <v-tab value="register">註冊</v-tab>
+            </v-tabs>
+
+            <v-card-text>
+              <v-window v-model="tab">
+                <v-window-item value="login">
+                  <LoginComp></LoginComp>
+                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
+                </v-window-item>
+                <v-window-item value="register">
+                  <RegisterComp></RegisterComp>
+                  <!-- <v-btn color="blue-grey-lighten-4" @click="dialog = false" class="w-100">關閉</v-btn> -->
+                </v-window-item>
+              </v-window>
+            </v-card-text>
+          </v-card>
+          </v-dialog>
         </v-btn>
       </div>
-      <div class="d-flex justify-center mt-2 mb-4">
+      <!-- <div class="d-flex justify-center mt-2 mb-4">
         <v-btn to="/register" v-if="!user.isLogin"
         class="d-flex align-center justify-center register">
         註冊
         </v-btn>
-      </div>
+      </div> -->
       <div class="d-flex justify-center mt-2 mb-4">
         <v-btn @click="logout" v-if="user.isLogin"
         class="d-flex align-center justify-center logout">
         登出
         </v-btn>
       </div>
-      <template v-for="item in navItems" :key="item.to">
-        <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
-          <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
-        </v-list-item>
-      </template>
     </v-list>
   </v-navigation-drawer>
 
@@ -51,7 +83,7 @@
 </template>
 
 <script setup>
-import { useDisplay } from 'vuetify'
+// import { useDisplay } from 'vuetify'
 import { ref, computed } from 'vue'
 // import LoginView from '@/views/front/LoginView.vue'
 import RegisterComp from '@/components/RegisterComp.vue'
@@ -72,11 +104,8 @@ const router = useRouter()
 const user = useUserStore()
 
 // 手機版判斷
-const { mobile } = useDisplay()
-const isMobile = computed(() => mobile.value)
-
-// 手機版惻欄開關
-const drawer = ref(false)
+// const { mobile } = useDisplay()
+// const isMobile = computed(() => mobile.value)
 
 const tab = ref('login')
 // ref() 會回傳一個響應式的物件，並且會自動將 tab 的值轉換為響應式的資料，這樣當 tab 的值改變時，會自動重新渲染頁面
@@ -105,13 +134,17 @@ const handleScroll = () => {
   }
 }
 
-// 監聽滾動事件
+// 監聽滾動事件==================================
 window.addEventListener('scroll', handleScroll)
 
 // 在組件被卸載前，移除滾動事件監聽器
 const beforeUnmount = () => {
   window.removeEventListener('scroll', handleScroll)
 }
+
+// Drawer  =================================
+const drawer = ref(false)
+// const drawerWidth = 500
 
 // 登出========================================
 const logout = async () => {
@@ -157,9 +190,9 @@ const logout = async () => {
   font-weight: 600;
   border-bottom: 2px solid rgb(110, 171, 217);
 }
-/* 深度選擇器 */
 .v-main::v-deep {
-    --v-layout-top: 0 !important;
+  /* 深度選擇器 */
+  --v-layout-top: 0 !important;
     --v-layout-bottom: 0 !important;
 }
 
@@ -173,17 +206,56 @@ const logout = async () => {
   /* border: 2px solid rgb(110, 171, 217); */
 }
 
+.drawer-btn-box{
+  position: relative;
+}
+.close-btn {
+  z-index: 1000;
+  color: rgba(110, 171, 217,1);
+  background-color: rgb(250, 253, 255);
+  box-shadow: none;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+}
+/* 側欄關閉按鈕位移 */
 .v-toolbar__content > .v-btn:last-child {
   margin-inline-end: 40px;
 }
+/* 側欄 */
+.v-navigation-drawer {
+  width: 100vw !important;
+  background-color: rgba(110, 171, 217,1);
+}
+/* menu 清單項目最小高度 */
+.v-list-item--density-default.v-list-item--one-line {
+  min-height: 80px;
+  /* padding: 8px 20px; */
+}
+/* menu 字體大小 */
 .list-title {
-  font-size: 20px;
+  font-size: 32px;
+}
+/* menu 清單設定 */
+.v-list-item-title{
+  color: white;
+  font-weight: 500;
+  line-height:32px ;
+}
+
+/* 垂直置中清單 */
+.v-list-centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 80px);
 }
 
 .login,
 .register,
 .logout{
-  width: 50%;
+  /* width: 10%; */
   height: 48px;
   font-size: 20px;
   border-radius: 1.25rem; /* equivalent to 'xl' in Vuetify */
@@ -199,33 +271,19 @@ const logout = async () => {
 
 }
 
-/* .swiper-container .swiper-nav-wrapper .swiper-button-next,
-.swiper-container .swiper-nav-wrapper .swiper-button-prev {
-  margin-top: 0;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
-  border: 1px solid #4d4d4d;
-  width: 35px;
-  height: 70px;
-  background-color: #000;
-  -webkit-transition: .25s ease;
-  transition: .25s ease;
-  z-index: 2
+/* 活动状态的列表项 */
+.v-list-item--variant-plain,
+.v-list-item--variant-outlined,
+.v-list-item--variant-text,
+.v-list-item--variant-tonal {
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    /* transform: rotate(-7deg); */
 }
 
-.swiper-button-next,
-.swiper-button-prev {
-  position: absolute;
-  top: 50%;
-  width: calc(var(--swiper-navigation-size)/ 44 * 27);
-  height: var(--swiper-navigation-size);
-  margin-top: calc(0px - (var(--swiper-navigation-size)/ 2));
-  z-index: 10;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--swiper-navigation-color, var(--swiper-theme-color))
-} */
+.v-list-item--variant-outlined:active{
+
+}
 
 </style>

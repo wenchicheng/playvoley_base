@@ -5,7 +5,6 @@
         <h1 class="text-center mt-4">開放時段管理</h1>
       </v-col>
       <v-col cols="12">
-
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
           v-model:sort-by="tableSortBy"
@@ -22,7 +21,7 @@
         >
           <template v-slot:top>
             <v-row>
-              <v-col cols="2" xl="1" md="2" sm="4">
+              <v-col cols="3" xl="2" md="2" sm="4">
               <v-btn
               prepend-icon="mdi-plus"
               color="#1565C0"
@@ -33,7 +32,7 @@
               @click="addAppointDialog()">新增時段</v-btn>
 
               </v-col>
-              <v-col cols="10" xl="11" md="10" sm="8">
+              <v-col cols="9" xl="10" md="10" sm="8">
                 <v-text-field
                 label="搜尋"
                 append-icon="mdi-magnify"
@@ -46,9 +45,6 @@
             </v-row>
           </template>
           <!-- 欄位顯示方式 item.後面接key值-->
-          <template #[`item.image`]="{ item }">
-            <v-img :src="item.image" height="60px"></v-img>
-          </template>
           <template #[`item.online`]="{ item }">
             <v-icon v-if="item.online">mdi-check</v-icon>
           </template>
@@ -88,7 +84,7 @@
                 :error-messages="height.errorMessage.value"
               ></v-select>
               </v-col>
-              <!-- <v-col cols="12">
+              <v-col cols="12">
                 <v-select
                   label="說明"
                   :items="infoItems"
@@ -97,7 +93,7 @@
                   chips
                   :error-messages="info.errorMessage.value"
                 ></v-select>
-              </v-col> -->
+              </v-col>
               <v-checkbox
                 label="上線"
                 v-model="online.value.value"
@@ -129,7 +125,7 @@ import { useSnackbar } from 'vuetify-use-dialog'
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
-// const infoItems = ['新手友善', '限制男女比例', '僅限女生', '僅限男生']
+const infoItems = ['新手友善', '男女混打', '僅限女生', '僅限男生', '宵夜場', '早場', '一般場', '高手場', '未開放', '只開放季打', '徵臨打']
 
 // const fileAgent = ref(null)
 // 給元件一個ref="fileAgent" 取得 vue-file-agent 的實例元件，
@@ -146,7 +142,7 @@ const addAppointDialog = (item) => {
     dialogId.value = item._id
     court.value.value = item.court
     peoplenumber.value.value = item.peoplenumber
-    // info.value.value = item.info
+    info.value.value = item.info
     height.value.value = item.height
     online.value.value = item.online
   } else {
@@ -177,10 +173,10 @@ const schema = yup.object({
     .typeError('開放名額格式錯誤')
     .required('缺少開放名額')
     .min(0, '開放名額不能小於0'),
-  // info: yup
-  //   .array()
-  //   .of(yup.string())
-  //   .nullable(),
+  info: yup
+    .array()
+    .of(yup.string().required('此欄位為必填'))
+    .required('此欄位為必填'),
   height: yup
     .string()
     .required('缺少網高')
@@ -205,7 +201,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
 // 表單欄位的 useField
 const court = useField('court')
 const peoplenumber = useField('peoplenumber')
-// const info = useField('info')
+const info = useField('info')
 const height = useField('height')
 const online = useField('online')
 
@@ -213,27 +209,28 @@ const online = useField('online')
 
 // 提交資料時
 const submit = handleSubmit(async (values) => {
-  if (dialogId.value === '') return
+  // if (dialogId.value === '') return
   try {
     // 建立 FormData 物件
     // 使用 fd.append(欄位, 值) 將資料放進去------------------------------------
-    const fd = new FormData()
-    fd.append('court', values.court || '排球場A')
-    // fd.append('date', values.date)
-    // fd.append('time', values.time)
-    fd.append('height', values.height)
-    fd.append('peoplenumber', values.peoplenumber)
-    // fd.append('info', values.info || '')
-    fd.append('online', values.online)
 
-    // if (fileRecords.value.length > 0) {
-    //   fd.append('image', fileRecords.value[0].file)
-    // }
     // 送出表單--------------------------------------------------------------
     if (dialogId.value === '') {
-      await apiAuth.post('/appointments', fd)
+      await apiAuth.post('/appointments', {
+        court: values.court,
+        peoplenumber: values.peoplenumber,
+        info: values.info,
+        height: values.height,
+        online: values.online
+      })
     } else {
-      await apiAuth.patch('/appointments/' + dialogId.value, fd)
+      await apiAuth.patch('/appointments/' + dialogId.value, {
+        court: values.court,
+        peoplenumber: values.peoplenumber,
+        info: values.info,
+        height: values.height,
+        online: values.online
+      })
     }
     // 顯示成功訊息-----------------------------------------------------------
     createSnackbar({
@@ -263,7 +260,7 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
-// 表格    每頁10個商品-------------------------------------------------------
+// 表格    每頁10個-------------------------------------------------------
 const tableItemsPerPage = ref(10)
 // 表格排序，desc 降冪，asc 升冪
 const tableSortBy = ref([
@@ -271,7 +268,7 @@ const tableSortBy = ref([
 ])
 // 表格頁碼
 const tablePage = ref(1)
-// 表格商品資料陣列
+// 表格資料陣列
 const tableProducts = ref([])
 // 表格欄位設定
 const tableHeaders = [
