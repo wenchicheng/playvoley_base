@@ -4,9 +4,9 @@ const schema = new Schema({
     type: String,
     required: [true, '場地，必填'],
     enum: {
-      values: ['排球場A', '未開放']
+      values: ['A', '未開放']
     },
-    default: '排球場A'
+    default: 'A'
   },
   // date: {
   //   type: Date,

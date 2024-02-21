@@ -4,9 +4,9 @@
     <v-col cols="6">
       <v-date-picker
       width="100%"
-      elevation="4"
-      color="rgba(80, 140, 220, 1)"
+      elevation="0"
       :first-day-of-week="1"
+      rounded-xl
       ></v-date-picker>
     </v-col>
     <v-col></v-col>

@@ -160,7 +160,7 @@ const closeDialog = () => {
 
 // 分類---------------------------------------------------------------------
 const heights = ['女網', '男網']
-const courts = ['排球場A', '未開放']
+const courts = ['A', '未開放']
 
 // 表單驗證-----------------------------------------------------------------
 const schema = yup.object({
@@ -190,7 +190,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
   // 設定初始值
   initialValues: {
-    court: '排球場A',
+    court: 'A',
     peoplenumber: 15,
     // info: [],
     height: '',

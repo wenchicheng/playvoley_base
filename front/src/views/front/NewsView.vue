@@ -1,8 +1,8 @@
 <template>
   <div class="top-block"></div>
-<v-container class="h-100 d-flex justify-center">
-  <h1>日曆版預約</h1>
-</v-container>
+  <v-container class="h-100 d-flex justify-center">
+    <h1>日曆版預約</h1>
+  </v-container>
 </template>
 
 <style scoped>
