@@ -70,6 +70,27 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
+                  label="日期"
+                  type="date"
+                  v-model="date.value.value"
+                  :error-messages="date.errorMessage.value"
+                ></v-text-field>
+                <!-- <v-menu v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                min-width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field v-model="date.value.value"
+                    label="選擇日期" prepend-icon="mdi-calendar"
+                    readonly v-bind="attrs"
+                    v-on="{ ...on, click: () => menu = true }"
+                  ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="date.value.value" @input="menu = false"></v-date-picker>
+                </v-menu> -->
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
                 label="開放名額"
                 type="number" min="0"
                 v-model="peoplenumber.value.value"
@@ -127,11 +148,6 @@ const createSnackbar = useSnackbar()
 
 const infoItems = ['新手友善', '男女混打', '僅限女生', '僅限男生', '宵夜場', '早場', '一般場', '高手場', '未開放', '只開放季打', '徵臨打']
 
-// const fileAgent = ref(null)
-// 給元件一個ref="fileAgent" 取得 vue-file-agent 的實例元件，
-// 再建立同名的 ref(null)，就可使用元件的ref的fileAgent.value，
-// 並呼叫裡面的function "deleteFileRecord()"
-
 const dialog = ref(false)
 // 表單對話框正在編輯的 ID，空的話代表是新增
 const dialogId = ref('')
@@ -141,6 +157,7 @@ const addAppointDialog = (item) => {
   if (item) {
     dialogId.value = item._id
     court.value.value = item.court
+    date.value.value = item.date
     peoplenumber.value.value = item.peoplenumber
     info.value.value = item.info
     height.value.value = item.height
@@ -168,6 +185,9 @@ const schema = yup.object({
     .string()
     .required('場地，必填'),
   // .test('isCourt', '場地類別錯誤', value => courts.includes(value)),
+  date: yup
+    .date()
+    .required('缺少日期'),
   peoplenumber: yup
     .number()
     .typeError('開放名額格式錯誤')
@@ -191,6 +211,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
   // 設定初始值
   initialValues: {
     court: 'A',
+    date: new Date(),
     peoplenumber: 15,
     // info: [],
     height: '',
@@ -200,24 +221,25 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
 
 // 表單欄位的 useField
 const court = useField('court')
+const date = useField('date')
 const peoplenumber = useField('peoplenumber')
 const info = useField('info')
 const height = useField('height')
 const online = useField('online')
 
-// const fileRecords = ref([])
+// 日期格式轉換
+const dateObject = new Date(date.value.value)
+const formattedDate = dateObject.toISOString().substr(0, 10)
 
 // 提交資料時
 const submit = handleSubmit(async (values) => {
   // if (dialogId.value === '') return
   try {
-    // 建立 FormData 物件
-    // 使用 fd.append(欄位, 值) 將資料放進去------------------------------------
-
     // 送出表單--------------------------------------------------------------
     if (dialogId.value === '') {
       await apiAuth.post('/appointments', {
         court: values.court,
+        date: formattedDate,
         peoplenumber: values.peoplenumber,
         info: values.info,
         height: values.height,
@@ -226,6 +248,7 @@ const submit = handleSubmit(async (values) => {
     } else {
       await apiAuth.patch('/appointments/' + dialogId.value, {
         court: values.court,
+        date: date.value.value,
         peoplenumber: values.peoplenumber,
         info: values.info,
         height: values.height,
@@ -272,7 +295,7 @@ const tablePage = ref(1)
 const tableProducts = ref([])
 // 表格欄位設定
 const tableHeaders = [
-  // { title: '日期', align: 'center', sortable: true, key: 'date' },
+  { title: '日期', align: 'center', sortable: true, key: 'date' },
   // { title: '時段', align: 'center', sortable: true, key: 'time' },
   { title: '名額', align: 'center', sortable: true, key: 'peoplenumber' },
   { title: '網高', align: 'center', sortable: true, key: 'height' },

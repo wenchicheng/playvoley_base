@@ -146,6 +146,7 @@ const dialogId = ref('')
 
 // 點擊"新增商品"的時候，打開編輯對話框，並自動帶入資訊
 const openDialog = (item) => {
+  console.log('點擊"新增商品"')
   if (item) {
     dialogId.value = item._id
     name.value.value = item.name

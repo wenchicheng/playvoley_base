@@ -5,13 +5,14 @@ import jwt from 'jsonwebtoken'
 // 建立使用者帳號 - 註冊
 export const create = async (req, res) => {
   try {
+    console.log('註冊成功')
     await users.create(req.body)
     res.status(StatusCodes.OK).json({
       success: true,
       message: ''
     })
   } catch (error) {
-    console.log(error)
+    console.log('建立使用者帳號 - 註冊失敗')
     if (error.name === 'ValidationError') {
       const key = Object.keys(error.errors)[0]
       const message = error.errors[key].message

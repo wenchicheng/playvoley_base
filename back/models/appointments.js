@@ -8,10 +8,10 @@ const schema = new Schema({
     },
     default: 'A'
   },
-  // date: {
-  //   type: Date,
-  //   required: [true, '日期必填']
-  // },
+  date: {
+    type: Date,
+    required: [true, '日期必填']
+  },
   // time: {
   //   type: String,
   //   required: [true, '時段，必填'],
