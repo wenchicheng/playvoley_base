@@ -37,10 +37,6 @@ const props = defineProps({
     type: String,
     required: true
   },
-  // description: {
-  //   type: String,
-  //   required: true
-  // },
   image: {
     type: String,
     required: true
@@ -59,6 +55,7 @@ const props = defineProps({
   }
 })
 
+// 加入購物車=======================================
 const addCart = async () => {
   if (!user.isLogin) {
     router.push('/login')

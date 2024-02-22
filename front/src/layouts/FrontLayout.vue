@@ -8,7 +8,10 @@
     <v-list class="v-list-centered">
       <template v-for="item in navItems" :key="item.to">
         <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
-          <v-list-item-title class="list-title">{{ item.text }}</v-list-item-title>
+          <v-list-item-title class="list-title">
+            {{ item.text }}
+            <v-badge :content="user.cart" color="rgb(26, 108, 163)" v-if="item.to === '/cart'" inline class="badge"></v-badge>
+          </v-list-item-title>
         </v-list-item>
       </template>
       <div class="d-flex justify-center mt-2 mb-4">
@@ -22,7 +25,7 @@
             <v-card>
             <v-tabs
               v-model="tab"
-              color="#1565C0"
+              color="rgb(26, 108, 163)"
               class="list-title"
               fixed-tabs>
               <v-tab value="login">登入</v-tab>
@@ -118,6 +121,7 @@ const navItems = computed(() => {
     { to: '/appointment', text: '預約報名', show: true },
     { to: '/myappointment', text: '我的預約', show: user.isLogin },
     { to: '/shop', text: '排球選物', show: user.isLogin },
+    { to: '/cart', text: '購物車', icon: 'mdi-cart', show: user.isLogin },
     { to: '/admin', text: '後台管理', show: user.isLogin && user.isAdmin }
   ]
 })
@@ -284,6 +288,13 @@ const logout = async () => {
 
 .v-list-item--variant-outlined:active{
 
+}
+
+/* 購物車數量 */
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 </style>
