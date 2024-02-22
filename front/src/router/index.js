@@ -59,6 +59,16 @@ const routes = [
         }
       },
       {
+        path: 'cart',
+        name: 'Cart',
+        component: () => import('@/views/front/CartView.vue'),
+        meta: {
+          title: '一起來打排 | 購物車',
+          login: true,
+          admin: false
+        }
+      },
+      {
         path: 'news',
         name: 'News',
         component: () => import('@/views/front/NewsView.vue'),
