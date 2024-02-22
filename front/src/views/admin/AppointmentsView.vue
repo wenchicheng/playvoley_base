@@ -21,7 +21,7 @@
         >
           <template v-slot:top>
             <v-row>
-              <v-col cols="3" xl="2" md="2" sm="4">
+              <v-col cols="12" xl="3" md="3" sm="7">
               <v-btn
               prepend-icon="mdi-plus"
               color="#1565C0"
@@ -32,7 +32,7 @@
               @click="addAppointDialog()">新增時段</v-btn>
 
               </v-col>
-              <v-col cols="9" xl="10" md="10" sm="8">
+              <v-col cols="12" xl="9" md="9" sm="5">
                 <v-text-field
                 label="搜尋"
                 append-icon="mdi-magnify"
@@ -44,7 +44,10 @@
               </v-col>
             </v-row>
           </template>
-          <!-- 欄位顯示方式 item.後面接key值-->
+          <!-- 欄位顯示 -->
+          <template #[`item.date`]="{ item }">
+            {{ new Date(item.date).toLocaleDateString() }}
+          </template>
           <template #[`item.online`]="{ item }">
             <v-icon v-if="item.online">mdi-check</v-icon>
           </template>
@@ -68,13 +71,16 @@
                   :error-messages="court.errorMessage.value"
                 ></v-select>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="12">
                 <v-text-field
                   label="日期"
                   type="date"
                   v-model="date.value.value"
                   :error-messages="date.errorMessage.value"
                 ></v-text-field>
+                <!-- :model-value="formattedDate"
+                  @input="value => handleDateInput(value,'begin')" -->
+
                 <!-- <v-menu v-model="menu"
                 :close-on-content-click="false"
                 transition="scale-transition"
@@ -89,6 +95,22 @@
                   <v-date-picker v-model="date.value.value" @input="menu = false"></v-date-picker>
                 </v-menu> -->
               </v-col>
+              <v-col cols="12" sm="6">
+                  <v-text-field
+                    label="開始時間"
+                    type="time"
+                    v-model="begin.value.value"
+                    :error-messages="begin.errorMessage.value"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    label="結束時間"
+                    type="time"
+                    v-model="end.value.value"
+                    :error-messages="end.errorMessage.value"
+                  ></v-text-field>
+                </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
                 label="開放名額"
@@ -158,6 +180,8 @@ const addAppointDialog = (item) => {
     dialogId.value = item._id
     court.value.value = item.court
     date.value.value = item.date
+    begin.value.value = item.begin
+    end.value.value = item.end
     peoplenumber.value.value = item.peoplenumber
     info.value.value = item.info
     height.value.value = item.height
@@ -188,6 +212,12 @@ const schema = yup.object({
   date: yup
     .date()
     .required('缺少日期'),
+  begin: yup
+    .string()
+    .required('缺少開始時間'),
+  end: yup
+    .string()
+    .required('缺少結束時間'),
   peoplenumber: yup
     .number()
     .typeError('開放名額格式錯誤')
@@ -212,6 +242,8 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
   initialValues: {
     court: 'A',
     date: new Date(),
+    begin: '12:00',
+    end: '12:00',
     peoplenumber: 15,
     // info: [],
     height: '',
@@ -222,24 +254,42 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
 // 表單欄位的 useField
 const court = useField('court')
 const date = useField('date')
+const begin = useField('begin')
+const end = useField('end')
 const peoplenumber = useField('peoplenumber')
 const info = useField('info')
 const height = useField('height')
 const online = useField('online')
 
-// 日期格式轉換
-const dateObject = new Date(date.value.value)
-const formattedDate = dateObject.toISOString().substr(0, 10)
+// 日期輸入---------------------------------------------------------------
+// const handleDateInput = (value, field) => {
+//   console.log('Input value:', value)
+
+//   const selectedDate = new Date(value)
+//   const formattedDate = selectedDate.toISOString().split('T')[0]
+//   if (field === 'date') {
+//     date.value.value = formattedDate
+//   }
+// }
 
 // 提交資料時
 const submit = handleSubmit(async (values) => {
-  // if (dialogId.value === '') return
+  // 日期格式轉換 "YYYY-MM-DD"
+  // const formattedDate = values.date.value.toISOString().substr(0, 10)
+  // 轉換為 ISO 8601 格式的字符串，使用 substr 方法取出前10個字符
+  // const formattedDate = selectedDate.toISOString().split('T')[0]
+  // 轉換為 ISO 8601 格式的字符串，使用 split 方法將字符串分割成兩部分，並選擇第一部分，也就是日期部分
+  // const selectedDate = new Date(date.value.value)
+  // 將一個日期字符串或者一個時間戳轉換為一個日期物件
+
   try {
     // 送出表單--------------------------------------------------------------
     if (dialogId.value === '') {
       await apiAuth.post('/appointments', {
         court: values.court,
-        date: formattedDate,
+        date: date.value.value,
+        begin: values.begin,
+        end: values.end,
         peoplenumber: values.peoplenumber,
         info: values.info,
         height: values.height,
@@ -249,6 +299,8 @@ const submit = handleSubmit(async (values) => {
       await apiAuth.patch('/appointments/' + dialogId.value, {
         court: values.court,
         date: date.value.value,
+        begin: values.begin,
+        end: values.end,
         peoplenumber: values.peoplenumber,
         info: values.info,
         height: values.height,
@@ -269,7 +321,7 @@ const submit = handleSubmit(async (values) => {
     closeDialog()
     tableApplySearch()
   } catch (error) {
-    console.log(error)
+    console.log('更新表格回到第一頁錯誤')
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
       text,
@@ -296,7 +348,8 @@ const tableProducts = ref([])
 // 表格欄位設定
 const tableHeaders = [
   { title: '日期', align: 'center', sortable: true, key: 'date' },
-  // { title: '時段', align: 'center', sortable: true, key: 'time' },
+  { title: '開始', align: 'center', sortable: true, key: 'begin' },
+  { title: '結束', align: 'center', sortable: true, key: 'end' },
   { title: '名額', align: 'center', sortable: true, key: 'peoplenumber' },
   { title: '網高', align: 'center', sortable: true, key: 'height' },
   // { title: '說明', align: 'center', sortable: true, key: 'info' },

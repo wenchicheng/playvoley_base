@@ -1,5 +1,5 @@
 <template>
-  <v-app class="bg-color">
+  <v-app class="bg-color ">
     <div class="mouse">
       <div
         v-for="(circle, index) in circles"
@@ -83,7 +83,6 @@ export default {
 </script>
 
 <style scoped>
-
 .bg-color {
   background-color: rgb(224, 236, 246);
 }

@@ -12,14 +12,14 @@ const schema = new Schema({
     type: Date,
     required: [true, '日期必填']
   },
-  // time: {
-  //   type: String,
-  //   required: [true, '時段，必填'],
-  //   enum: {
-  //     values: ['', ''],
-  //     message: '請選擇時段'
-  //   }
-  // },
+  begin: {
+    type: String,
+    required: [true, '開始時間必填']
+  },
+  end: {
+    type: String,
+    required: [true, '結束時間必填']
+  },
   peoplenumber: {
     type: Number,
     required: [true, '開放名額，必填'],

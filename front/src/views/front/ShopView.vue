@@ -1,18 +1,22 @@
 <template>
-<v-container
-class="h-100 d-flex justify-center align-center"
-:style="{ width: getContainerWidth() }">
-  <v-row>
-    <v-col cols="12">
-        <h1 class="text-center mt-15 mb-5">所有商品</h1>
-    </v-col>
-    <v-col v-for="product in products"
-    :key="product._id"
-    :cols="getCols()">
-    <ProductCard v-bind="product" />
-    </v-col>
-  </v-row>
-</v-container>
+  <div class="top-block"></div>
+  <div class="outline-all">
+    <v-container
+    class="h-100 d-flex justify-center align-center"
+    :style="{ width: getContainerWidth() }">
+      <v-row>
+        <v-col cols="12">
+            <h1 class="text-center mt-15 mb-5">所有商品</h1>
+        </v-col>
+        <v-col v-for="product in products"
+        :key="product._id"
+        :cols="getCols()">
+        <ProductCard v-bind="product" />
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+
 </template>
 
 <script setup>
@@ -83,3 +87,15 @@ const getCols = () => {
   }
 }
 </script>
+
+<style scoped>
+.outline-all * {
+  outline: 1px solid #e06969;
+}
+
+.top-block{
+width: 100%;
+height: 64px;
+/* background-color: #fff; */
+}
+</style>
