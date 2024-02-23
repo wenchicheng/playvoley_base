@@ -59,6 +59,16 @@ const routes = [
         }
       },
       {
+        path: 'products/:id',
+        name: 'Product',
+        component: () => import('@/views/front/ProductView.vue'),
+        meta: {
+          title: '一起來打排 | 商品介紹',
+          login: false,
+          admin: false
+        }
+      },
+      {
         path: 'cart',
         name: 'Cart',
         component: () => import('@/views/front/CartView.vue'),
@@ -69,12 +79,12 @@ const routes = [
         }
       },
       {
-        path: 'products/:id',
-        name: 'Products',
-        component: () => import('@/views/front/ProductView.vue'),
+        path: 'orders',
+        name: 'Orders',
+        component: () => import('@/views/front/OrdersView.vue'),
         meta: {
-          title: '一起來打排 | 商品介紹',
-          login: false,
+          title: '一起來打排 | 訂單',
+          login: true,
           admin: false
         }
       },
