@@ -11,12 +11,27 @@
           elevation="0"
           :first-day-of-week="1"
           rounded-xl
+          v-model="selectedDate"
+          @update:model-value="getAppointment"
           ></v-date-picker>
         </v-col>
         <v-col v-for="appointment in appointments"
         :key="appointment._id"
         :cols="getCols()">
-        <AppointCard v-bind="appointment" />
+        <v-card class="appointment-card">
+          <!-- <v-img :src="image" contain height="60" /> -->
+          <v-card-title>
+            {{ selectedDate.toLocaleDateString() }}
+            <!-- {{ new Date(date).toISOString().split('T')[0] }} -->
+          </v-card-title>
+          <v-card-subtitle>{{ appointment.begin + ' ~ ' + appointment.end }}</v-card-subtitle>
+
+          <v-chip style="white-space: pre;">{{ appointment.info }}</v-chip>
+
+          <v-card-actions class="text-center justify-center">
+            <v-btn color="primary" prepend-icon="mdi-cart" class="w-100" @click="addCart">預約</v-btn>
+          </v-card-actions>
+        </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -28,24 +43,25 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
-import AppointCard from '@/components/AppointCard.vue'
+// import AppointCard from '@/components/AppointCard.vue'
 import gsap from 'gsap'
+import { date } from 'yup'
 
 const { api } = useApi()
 const createSnackbar = useSnackbar()
 
 const appointments = ref([])
+const selectedDate = ref()
 
 // 把頁面上的資料取出來，在onMounted的時候才可以抓到頁面上DOM元素
 onMounted(async () => {
   try {
-    const { data } = await api.get('/appointments', {
+    const { data } = await api.get('/appointments/date', {
       params: {
-        // 預設20筆資料，-1是全部
-        itemsPerPage: -1
+        date: new Date().toISOString().split('T')[0]
       }
     })
-    appointments.value.push(...data.result.data)
+    appointments.value.push(...data.result)
     await nextTick()
     // 用 GSAP 動畫----------------------------------------
     gsap
@@ -91,6 +107,21 @@ const getCols = () => {
     return 12 // sm
   }
 }
+
+const getAppointment = async () => {
+  try {
+    const { data } = await api.get('/appointments/date/', {
+      params: {
+        date: selectedDate.value.getTime()
+      }
+    })
+    appointments.value = data.result
+    console.log(data)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 </script>
 
 <style scoped>

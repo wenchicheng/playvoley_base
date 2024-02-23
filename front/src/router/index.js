@@ -69,6 +69,16 @@ const routes = [
         }
       },
       {
+        path: 'products/:id',
+        name: 'Products',
+        component: () => import('@/views/front/ProductView.vue'),
+        meta: {
+          title: '一起來打排 | 商品介紹',
+          login: false,
+          admin: false
+        }
+      },
+      {
         path: 'news',
         name: 'News',
         component: () => import('@/views/front/NewsView.vue'),

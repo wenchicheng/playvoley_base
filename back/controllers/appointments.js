@@ -122,6 +122,35 @@ export const get = async (req, res) => {
   }
 }
 
+export const getDateAppointments = async (req, res) => {
+  try {
+    // if (validator.isDate(req.query.date)) throw new Error('DATE')
+    const pickDate = new Date(parseInt(req.query.date))
+    pickDate.setHours(8)
+    console.log(req.query.date)
+    console.log(pickDate)
+    const result = await appointments.find({ date: pickDate })
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result
+    })
+  } catch (error) {
+    console.log(error)
+    if (error.message === 'DATE') {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: '日期格式錯誤'
+      })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: '未知錯誤'
+      })
+    }
+  }
+}
+
 // 取得單一開放時段=================================================================
 export const getId = async (req, res) => {
   try {

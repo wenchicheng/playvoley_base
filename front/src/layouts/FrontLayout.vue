@@ -10,6 +10,7 @@
         <v-list-item :to="item.to" class="d-flex align-center justify-center" v-if="item.show">
           <v-list-item-title class="list-title">
             {{ item.text }}
+            <!-- <v-icon v-if="item.to === '/cart'" class="cart-icon">mdi-cart</v-icon> -->
             <v-badge :content="user.cart" color="rgb(26, 108, 163)" v-if="item.to === '/cart'" inline class="badge"></v-badge>
           </v-list-item-title>
         </v-list-item>
@@ -294,7 +295,15 @@ const logout = async () => {
 .badge {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -6px;
+  transform: scale(1.1);
+}
+
+.cart-icon{
+  transform: scale(0.6);
+  position: absolute;
+  top: 15px;
+  right: -30px;
 }
 
 </style>

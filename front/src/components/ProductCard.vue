@@ -58,7 +58,7 @@ const props = defineProps({
 // 加入購物車=======================================
 const addCart = async () => {
   if (!user.isLogin) {
-    router.push('/login')
+    router.push('/shop')
     return
   }
   try {
@@ -68,7 +68,7 @@ const addCart = async () => {
     })
     user.cart = data.result
     createSnackbar({
-      text: '新增成功',
+      text: '已放入購物車',
       showCloseButton: false,
       snackbarProps: {
         timeout: 2000,

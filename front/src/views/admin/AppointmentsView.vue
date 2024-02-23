@@ -261,27 +261,17 @@ const info = useField('info')
 const height = useField('height')
 const online = useField('online')
 
-// 日期輸入---------------------------------------------------------------
-// const handleDateInput = (value, field) => {
-//   console.log('Input value:', value)
-
-//   const selectedDate = new Date(value)
-//   const formattedDate = selectedDate.toISOString().split('T')[0]
-//   if (field === 'date') {
-//     date.value.value = formattedDate
-//   }
-// }
+// ---------------------------------------------------------------
+// 日期格式轉換 "YYYY-MM-DD"
+// const formattedDate = values.date.value.toISOString().substr(0, 10)
+// 轉換為 ISO 8601 格式的字符串，使用 substr 方法取出前10個字符
+// const formattedDate = selectedDate.toISOString().split('T')[0]
+// 轉換為 ISO 8601 格式的字符串，使用 split 方法將字符串分割成兩部分，並選擇第一部分，也就是日期部分
+// const selectedDate = new Date(date.value.value)
+// 將一個日期字符串或者一個時間戳轉換為一個日期物件
 
 // 提交資料時
 const submit = handleSubmit(async (values) => {
-  // 日期格式轉換 "YYYY-MM-DD"
-  // const formattedDate = values.date.value.toISOString().substr(0, 10)
-  // 轉換為 ISO 8601 格式的字符串，使用 substr 方法取出前10個字符
-  // const formattedDate = selectedDate.toISOString().split('T')[0]
-  // 轉換為 ISO 8601 格式的字符串，使用 split 方法將字符串分割成兩部分，並選擇第一部分，也就是日期部分
-  // const selectedDate = new Date(date.value.value)
-  // 將一個日期字符串或者一個時間戳轉換為一個日期物件
-
   try {
     // 送出表單--------------------------------------------------------------
     if (dialogId.value === '') {

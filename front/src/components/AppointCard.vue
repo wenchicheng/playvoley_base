@@ -2,10 +2,7 @@
   <v-card class="appointment-card">
     <!-- <v-img :src="image" contain height="60" /> -->
     <v-card-title>
-      {{ date }}
-      <!-- <router-link
-      :to="'/appointments/' + _id">{{ date }}
-      </router-link> -->
+      {{ new Date(date).toISOString().split('T')[0] }}
     </v-card-title>
     <v-card-subtitle>{{ begin + ' ~ ' + end }}</v-card-subtitle>
 
